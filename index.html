@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>SportAnalyzer Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <style>
+  /* ═══════════════════════════════════════
+     DESIGN SYSTEM — SPORT ANALYZER PRO
+  ═══════════════════════════════════════ */
+  :root {
+    /* Base */
+    --bg:      #05060f;
+    --bg2:     #080c1a;
+    --surface: #0c1120;
+    --s2:      #101728;
+    --s3:      #141e32;
+
+    /* Accents */
+    --cyan:    #22d3ee;
+    --cyan2:   #06b6d4;
+    --purple:  #818cf8;
+    --gold:    #fbbf24;
+    --emerald: #34d399;
+    --rose:    #fb7185;
+
+    /* Semantic */
+    --ok:   #34d399;
+    --warn: #fbbf24;
+    --bad:  #fb7185;
+
+    /* Text */
+    --t1: #f8fafc;
+    --t2: #94a3b8;
+    --t3: #475569;
+    --t4: #1e293b;
+
+    /* Borders */
+    --b:   rgba(148,163,184,0.08);
+    --bc:  rgba(34,211,238,0.2);
+    --bg-a:rgba(34,211,238,0.06);
+
+    /* Radius */
+    --r:  10px;
+    --r2: 16px;
+    --r3: 22px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.4);
+    --shadow:    0 4px 24px rgba(0,0,0,0.5);
+    --shadow-lg: 0 8px 48px rgba(0,0,0,0.6);
+    --glow:      0 0 30px rgba(34,211,238,0.15);
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+  html { height:100%; scroll-behavior:smooth; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--bg);
+    color: var(--t1);
+    min-height: 100vh;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Background ambient gradient */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% -10%, rgba(34,211,238,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 50% at 80% 110%, rgba(129,140,248,0.04) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ═══ SCROLLBAR ═══ */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--t4); border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--t3); }
+
+  /* ═══ LAYOUT ═══ */
+  .layout { display: flex; min-height: 100vh; position: relative; z-index: 1; }
+
+  /* ═══════════════════════════════════════
+     SIDEBAR
+  ═══════════════════════════════════════ */
+  .sidebar {
+    width: 248px; flex-shrink: 0;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--bg2) 100%);
+    border-right: 1px solid var(--b);
+    display: flex; flex-direction: column;
+    padding: 0;
+    position: fixed; top: 0; left: 0; bottom: 0;
+    z-index: 50;
+    box-shadow: 2px 0 20px rgba(0,0,0,0.3);
+  }
+
+  .sidebar-top {
+    padding: 24px 20px 0;
+  }
+
+  /* Logo */
+  .logo {
+    display: flex; align-items: center; gap: 14px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--b);
+  }
+  .logo-mark {
+    width: 42px; height: 42px; border-radius: 12px; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 4px 16px rgba(34,211,238,0.3);
+    position: relative;
+  }
+  .logo-mark::after {
+    content: '';
+    position: absolute; inset: -1px; border-radius: 13px;
+    background: linear-gradient(135deg, rgba(34,211,238,0.5), rgba(129,140,248,0.5));
+    z-index: -1;
+  }
+  .logo-text { line-height: 1.2; }
+  .logo-name { font-size: 15px; font-weight: 800; letter-spacing: -0.3px; }
+  .logo-tag  { font-size: 10px; color: var(--cyan); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; margin-top: 2px; }
+
+  /* Nav */
+  .nav-body { padding: 20px 14px 0; flex: 1; overflow-y: auto; }
+  .nav-section { margin-bottom: 6px; }
+  .nav-label {
+    font-size: 9.5px; text-transform: uppercase; letter-spacing: 2px;
+    color: var(--t3); padding: 0 8px; margin-bottom: 6px; margin-top: 18px;
+    display: block;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px;
+    padding: 10px 12px; border-radius: var(--r);
+    font-size: 13.5px; font-weight: 500; color: var(--t2);
+    cursor: pointer; transition: all 0.2s; margin-bottom: 2px;
+    border: 1px solid transparent; position: relative; overflow: hidden;
+  }
+  .nav-item::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: var(--cyan); border-radius: 0 3px 3px 0;
+    transform: scaleY(0); transition: transform 0.2s; transform-origin: center;
+  }
+  .nav-item:hover { background: rgba(148,163,184,0.05); color: var(--t1); }
+  .nav-item.active {
+    background: linear-gradient(90deg, rgba(34,211,238,0.1), rgba(34,211,238,0.04));
+    color: var(--cyan); border-color: rgba(34,211,238,0.15);
+    font-weight: 600;
+  }
+  .nav-item.active::before { transform: scaleY(1); }
+  .nav-icon { font-size: 16px; width: 20px; text-align: center; flex-shrink: 0; }
+  .nav-badge {
+    margin-left: auto; background: var(--cyan); color: var(--bg);
+    font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 8px;
+  }
+
+  /* Sidebar bottom */
+  .sidebar-bottom {
+    padding: 16px 14px;
+    border-top: 1px solid var(--b);
+  }
+  .sidebar-tip {
+    background: linear-gradient(135deg, rgba(34,211,238,0.06), rgba(129,140,248,0.06));
+    border: 1px solid rgba(34,211,238,0.15);
+    border-radius: var(--r2); padding: 14px 16px;
+    font-size: 12px; color: var(--t2); line-height: 1.65;
+  }
+  .sidebar-tip strong { color: var(--cyan); }
+
+  /* Status indicator in sidebar */
+  .sidebar-status {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 12px; border-radius: var(--r);
+    background: var(--s2); border: 1px solid var(--b);
+    margin-bottom: 10px; font-size: 12px; color: var(--t2);
+  }
+  .status-led { width: 6px; height: 6px; border-radius: 50%; background: var(--t3); flex-shrink: 0; }
+  .status-led.on  { background: var(--ok); box-shadow: 0 0 6px var(--ok); animation: pulse 1.5s infinite; }
+  .status-led.rec { background: var(--bad); box-shadow: 0 0 6px var(--bad); animation: pulse 0.8s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.35} }
+
+  /* ═══ MAIN ═══ */
+  .main { margin-left: 248px; flex: 1; padding: 28px 28px 40px; min-height: 100vh; }
+
+  /* ═══ VIEWS ═══ */
+  .view { display: none; animation: fadeUp 0.3s ease; }
+  .view.active { display: block; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ═══ PAGE HEADER ═══ */
+  .ph { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 14px; }
+  .ph-eyebrow { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; color: var(--cyan); margin-bottom: 6px; }
+  .ph-title   { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; line-height: 1.1; }
+  .ph-sub     { font-size: 13.5px; color: var(--t2); margin-top: 5px; }
+
+  /* ═══ GRID ═══ */
+  .g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
+
+  /* ═══ CARDS ═══ */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--b);
+    border-radius: var(--r3);
+    padding: 20px 22px;
+    position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  }
+  .card-t {
+    font-size: 10.5px; text-transform: uppercase; letter-spacing: 1.8px;
+    color: var(--t3); margin-bottom: 16px; font-weight: 600;
+  }
+
+  /* ═══ STAT CARDS ═══ */
+  .scard {
+    background: var(--surface);
+    border: 1px solid var(--b);
+    border-radius: var(--r3);
+    padding: 20px 22px;
+    position: relative; overflow: hidden;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    cursor: default;
+  }
+  .scard:hover {
+    border-color: rgba(34,211,238,0.2);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow), var(--glow);
+  }
+  .scard::after {
+    content: ''; position: absolute; top: 0; right: 0;
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(34,211,238,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .scard-ico  { font-size: 24px; margin-bottom: 14px; display: block; }
+  .scard-lbl  { font-size: 11px; color: var(--t3); font-weight: 600; text-transform: uppercase; letter-spacing: 1.2px; margin-bottom: 8px; }
+  .scard-val  { font-size: 36px; font-weight: 900; letter-spacing: -1px; line-height: 1; }
+  .scard-unit { font-size: 13px; color: var(--t2); margin-top: 4px; }
+  .scard-trend { font-size: 11.5px; margin-top: 10px; display: flex; align-items: center; gap: 4px; }
+
+  /* ═══ BUTTONS ═══ */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: var(--r2);
+    font-size: 13.5px; font-weight: 600; cursor: pointer;
+    border: none; transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    text-decoration: none; font-family: inherit; white-space: nowrap;
+    position: relative; overflow: hidden;
+  }
+  .btn::after {
+    content: ''; position: absolute; inset: 0;
+    background: rgba(255,255,255,0); transition: background 0.2s;
+    border-radius: inherit;
+  }
+  .btn:hover::after { background: rgba(255,255,255,0.05); }
+
+  .btn-p {
+    background: linear-gradient(135deg, var(--cyan2), #0891b2);
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(6,182,212,0.3);
+  }
+  .btn-p:hover {
+    box-shadow: 0 6px 24px rgba(6,182,212,0.45);
+    transform: translateY(-1px);
+  }
+  .btn-p:active { transform: translateY(0); }
+
+  .btn-ghost {
+    background: rgba(148,163,184,0.06);
+    border: 1px solid var(--b);
+    color: var(--t2);
+  }
+  .btn-ghost:hover { background: rgba(148,163,184,0.1); color: var(--t1); border-color: rgba(148,163,184,0.15); }
+
+  .btn-outline {
+    background: transparent;
+    border: 1px solid rgba(34,211,238,0.3);
+    color: var(--cyan);
+  }
+  .btn-outline:hover { background: rgba(34,211,238,0.07); border-color: rgba(34,211,238,0.5); }
+
+  .btn-danger {
+    background: rgba(251,113,133,0.1);
+    border: 1px solid rgba(251,113,133,0.25);
+    color: var(--bad);
+  }
+  .btn-danger:hover { background: rgba(251,113,133,0.18); }
+
+  .btn-lg { padding: 14px 32px; font-size: 15px; border-radius: 14px; }
+
+  /* ═══ SPORT SELECTOR ═══ */
+  .sport-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(104px, 1fr)); gap: 10px; }
+  .sport-opt {
+    background: var(--s2);
+    border: 1px solid var(--b);
+    border-radius: var(--r2); padding: 18px 12px 16px;
+    text-align: center; cursor: pointer;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    position: relative; overflow: hidden;
+  }
+  .sport-opt::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(34,211,238,0.08), rgba(129,140,248,0.08));
+    opacity: 0; transition: opacity 0.2s;
+  }
+  .sport-opt:hover { border-color: rgba(34,211,238,0.25); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+  .sport-opt:hover::before { opacity: 1; }
+  .sport-opt.sel {
+    border-color: var(--cyan2);
+    background: linear-gradient(135deg, rgba(34,211,238,0.1), rgba(129,140,248,0.08));
+    box-shadow: 0 0 0 1px rgba(34,211,238,0.2), var(--glow);
+  }
+  .sport-opt.sel::before { opacity: 1; }
+  .sport-ico { font-size: 26px; margin-bottom: 8px; display: block; }
+  .sport-lbl { font-size: 12px; font-weight: 600; color: var(--t2); }
+  .sport-opt.sel .sport-lbl { color: var(--cyan); }
+
+  /* ═══ TRACKING LAYOUT ═══ */
+  .track-layout {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 16px;
+    height: calc(100vh - 116px);
+  }
+
+  /* Camera */
+  .cam-box {
+    position: relative; background: #000;
+    border-radius: var(--r3); overflow: hidden;
+    border: 1px solid var(--b);
+    box-shadow: var(--shadow-lg);
+  }
+  #vid { width: 100%; height: 100%; object-fit: cover; display: block; transform: scaleX(-1); }
+  #cvs { position: absolute; top:0; left:0; width:100%; height:100%; transform: scaleX(-1); }
+
+  /* Camera HUD */
+  .cam-hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, rgba(5,6,15,0.7) 0%, transparent 100%);
+  }
+  .cam-pill {
+    display: flex; align-items: center; gap: 8px;
+    background: rgba(5,6,15,0.7); backdrop-filter: blur(12px);
+    padding: 7px 14px; border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.08);
+    font-size: 12px; font-weight: 500;
+  }
+  .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--t3); flex-shrink: 0; }
+  .dot.on  { background: var(--ok); box-shadow: 0 0 8px var(--ok); animation: pulse 1.5s infinite; }
+  .dot.rec { background: var(--bad); box-shadow: 0 0 8px var(--bad); animation: pulse 0.7s infinite; }
+
+  .rec-pill {
+    background: rgba(251,113,133,0.85); backdrop-filter: blur(12px);
+    padding: 7px 14px; border-radius: 20px; font-size: 12px; font-weight: 700;
+    display: none; letter-spacing: 0.5px;
+  }
+  .rec-pill.on { display: block; }
+
+  /* No person overlay */
+  .no-person {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    background: rgba(5,6,15,0.55); backdrop-filter: blur(2px);
+    color: var(--t2); pointer-events: none; opacity: 0; transition: opacity 0.4s;
+  }
+  .no-person.show { opacity: 1; }
+  .no-person-ico { font-size: 52px; margin-bottom: 12px; opacity: 0.4; }
+  .no-person-txt { font-size: 14px; font-weight: 500; }
+
+  /* Camera bottom controls */
+  .cam-controls {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    display: flex; align-items: center; justify-content: center; gap: 16px;
+    padding: 20px;
+    background: linear-gradient(0deg, rgba(5,6,15,0.75) 0%, transparent 100%);
+  }
+  .ctrl-btn {
+    width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(5,6,15,0.7); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; cursor: pointer; transition: all 0.2s;
+    color: var(--t1);
+  }
+  .ctrl-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); transform: scale(1.08); }
+  .rec-btn {
+    width: 64px; height: 64px; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.8);
+    background: var(--bad);
+    cursor: pointer; position: relative; transition: all 0.25s;
+    box-shadow: 0 4px 20px rgba(251,113,133,0.4);
+  }
+  .rec-btn::after {
+    content: ''; position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 24px; height: 24px;
+    background: rgba(255,255,255,0.9);
+    border-radius: 50%; transition: all 0.25s;
+  }
+  .rec-btn.on::after { border-radius: 5px; width: 18px; height: 18px; }
+  .rec-btn.on { box-shadow: 0 4px 24px rgba(251,113,133,0.6); }
+
+  /* ═══ METRICS PANEL ═══ */
+  .metrics { display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-right: 2px; }
+
+  /* Quality card */
+  .q-card { text-align: center; padding: 22px 16px 18px; }
+  .q-ring-wrap { position: relative; width: 120px; height: 120px; margin: 0 auto 14px; }
+  .q-ring-wrap svg { position: absolute; inset: 0; }
+  .q-ring-val {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 30px; font-weight: 900; letter-spacing: -1px;
+    line-height: 1;
+  }
+  .q-lbl { font-size: 13px; font-weight: 600; color: var(--t2); }
+  .q-sublbl { font-size: 11px; color: var(--t3); margin-top: 3px; }
+
+  /* Metric rows */
+  .mrow {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 9px 0; border-bottom: 1px solid var(--b);
+  }
+  .mrow:last-child { border-bottom: none; }
+  .mrow-l { font-size: 12px; color: var(--t2); font-weight: 500; }
+  .mrow-v { font-size: 15px; font-weight: 700; }
+  .abar   { height: 3px; background: rgba(255,255,255,0.06); border-radius: 3px; margin-top: 3px; overflow: hidden; }
+  .abar-f { height: 100%; background: linear-gradient(90deg, var(--cyan2), var(--purple)); border-radius: 3px; transition: width 0.15s; }
+
+  /* Progress bar */
+  .pbar   { height: 5px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .pbar-f { height: 100%; background: linear-gradient(90deg, var(--cyan2), var(--emerald)); border-radius: 3px; transition: width 0.2s; }
+
+  /* ═══ SESSION ITEMS ═══ */
+  .sitem {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 16px;
+    background: var(--surface); border: 1px solid var(--b);
+    border-radius: var(--r2); margin-bottom: 8px;
+    cursor: pointer; transition: all 0.2s; position: relative; overflow: hidden;
+  }
+  .sitem::before {
+    content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px;
+    background: linear-gradient(180deg, var(--cyan2), var(--purple));
+    border-radius: 3px 0 0 3px; opacity: 0; transition: opacity 0.2s;
+  }
+  .sitem:hover { border-color: rgba(34,211,238,0.2); transform: translateX(3px); }
+  .sitem:hover::before { opacity: 1; }
+  .sitem-ico {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, rgba(34,211,238,0.1), rgba(129,140,248,0.1));
+    border: 1px solid rgba(34,211,238,0.15);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; flex-shrink: 0;
+  }
+  .sitem-name { font-size: 13.5px; font-weight: 600; }
+  .sitem-meta { font-size: 11.5px; color: var(--t2); margin-top: 2px; }
+  .sitem-score { font-size: 24px; font-weight: 900; flex-shrink: 0; letter-spacing: -0.5px; }
+
+  /* ═══ BADGES ═══ */
+  .badge { display: inline-block; padding: 2px 9px; border-radius: 20px; font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px; }
+  .b-ok  { background: rgba(52,211,153,0.12); color: var(--emerald); border: 1px solid rgba(52,211,153,0.2); }
+  .b-wn  { background: rgba(251,191,36,0.12); color: var(--gold);    border: 1px solid rgba(251,191,36,0.2); }
+  .b-bd  { background: rgba(251,113,133,0.12); color: var(--rose);   border: 1px solid rgba(251,113,133,0.2); }
+  .b-inf { background: rgba(34,211,238,0.12);  color: var(--cyan);   border: 1px solid rgba(34,211,238,0.2); }
+
+  /* ═══ TIP BOX ═══ */
+  .tip {
+    background: linear-gradient(135deg, rgba(34,211,238,0.05), rgba(129,140,248,0.05));
+    border: 1px solid rgba(34,211,238,0.15); border-radius: var(--r);
+    padding: 12px 14px; font-size: 12px; color: var(--t2); line-height: 1.7;
+  }
+  .tip strong { color: var(--cyan); }
+
+  /* ═══ CHART WRAPPERS ═══ */
+  .ch { position: relative; }
+  .ch-200 { height: 200px; }
+  .ch-140 { height: 140px; }
+  .ch-110 { height: 110px; }
+
+  /* ═══ EMPTY STATE ═══ */
+  .empty { text-align: center; padding: 56px 20px; }
+  .empty-i { font-size: 42px; margin-bottom: 12px; opacity: 0.35; display: block; }
+  .empty-t { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: var(--t1); }
+  .empty-d { font-size: 13px; color: var(--t2); }
+
+  /* ═══ DIVIDER ═══ */
+  .divider { height: 1px; background: var(--b); margin: 16px 0; }
+
+  /* ═══ LOADING SCREEN ═══ */
+  #loader {
+    position: fixed; inset: 0;
+    background: var(--bg);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 9999;
+  }
+  #loader::before {
+    content: ''; position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% -10%, rgba(34,211,238,0.06) 0%, transparent 70%);
+  }
+  .loader-logo {
+    width: 72px; height: 72px; border-radius: 20px;
+    background: linear-gradient(135deg, var(--cyan2), var(--purple));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 34px; margin-bottom: 20px;
+    box-shadow: 0 8px 40px rgba(34,211,238,0.3);
+    animation: breathe 2s ease-in-out infinite;
+  }
+  @keyframes breathe {
+    0%,100% { box-shadow: 0 8px 40px rgba(34,211,238,0.3); transform: scale(1); }
+    50%      { box-shadow: 0 8px 60px rgba(34,211,238,0.5); transform: scale(1.04); }
+  }
+  .loader-title { font-size: 22px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+  .loader-msg   { font-size: 13px; color: var(--t2); margin-bottom: 32px; }
+  .loader-bar   {
+    width: 200px; height: 3px; background: var(--b); border-radius: 3px; overflow: hidden;
+  }
+  .loader-fill  {
+    height: 100%; width: 40%; background: linear-gradient(90deg, var(--cyan2), var(--purple));
+    border-radius: 3px; animation: loadbar 1.4s ease-in-out infinite alternate;
+  }
+  @keyframes loadbar { from { width: 20%; margin-left: 0; } to { width: 60%; margin-left: 40%; } }
+
+  /* ═══ TOASTS ═══ */
+  #toasts { position: fixed; bottom: 84px; right: 20px; z-index: 999; display: flex; flex-direction: column; gap: 8px; }
+  .toast {
+    background: var(--s2);
+    border: 1px solid var(--b);
+    border-left: 3px solid var(--cyan);
+    padding: 12px 16px; border-radius: var(--r2);
+    font-size: 13px; font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    animation: toastIn 0.3s cubic-bezier(.4,0,.2,1);
+    max-width: 280px; pointer-events: none;
+    backdrop-filter: blur(12px);
+  }
+  .toast.ok  { border-left-color: var(--emerald); }
+  .toast.err { border-left-color: var(--rose); }
+  @keyframes toastIn { from { transform: translateX(120%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+  /* ═══ MODAL ═══ */
+  .overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(5,6,15,0.8);
+    backdrop-filter: blur(8px);
+    z-index: 200; align-items: center; justify-content: center; padding: 16px;
+  }
+  .overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: var(--surface);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 24px; padding: 28px;
+    width: 100%; max-width: 480px;
+    max-height: 92vh; overflow-y: auto;
+    box-shadow: var(--shadow-lg), 0 0 60px rgba(34,211,238,0.08);
+    animation: modalIn 0.3s cubic-bezier(.4,0,.2,1);
+    position: relative;
+  }
+  .modal::before {
+    content: ''; position: absolute; top: 0; left: 20%; right: 20%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(34,211,238,0.4), transparent);
+  }
+  @keyframes modalIn { from { transform: translateY(20px) scale(0.97); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+  .modal-t  { font-size: 19px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 4px; }
+  .modal-st { font-size: 13px; color: var(--t2); margin-bottom: 22px; }
+  .field-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--t3); margin-bottom: 8px; font-weight: 600; }
+  .inp {
+    width: 100%; background: var(--bg2); border: 1px solid var(--b);
+    color: var(--t1); padding: 12px 14px; border-radius: var(--r);
+    font-size: 14px; outline: none; transition: border-color 0.2s; font-family: inherit;
+  }
+  .inp:focus { border-color: rgba(34,211,238,0.4); }
+  .inp::placeholder { color: var(--t3); }
+
+  /* ═══ REPORT HEADER ═══ */
+  .rep-hdr {
+    background: linear-gradient(135deg, rgba(34,211,238,0.1), rgba(129,140,248,0.1));
+    border: 1px solid rgba(34,211,238,0.2);
+    border-radius: var(--r3); padding: 24px; margin-bottom: 18px;
+    position: relative; overflow: hidden;
+  }
+  .rep-hdr::before {
+    content: ''; position: absolute; top: -50%; right: -10%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(34,211,238,0.08), transparent 70%);
+  }
+
+  /* ═══ GRADIENT DIVIDER ═══ */
+  .g-line {
+    height: 1px; margin: 0 -22px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent);
+  }
+
+  /* ═══ BOTTOM NAV (mobile) ═══ */
+  .bnav {
+    display: none; position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(8,12,26,0.92); backdrop-filter: blur(16px);
+    border-top: 1px solid var(--b);
+    padding: 6px 0 calc(6px + env(safe-area-inset-bottom)); z-index: 50;
+  }
+  .bnav-items { display: flex; justify-content: space-around; }
+  .bnav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 3px;
+    padding: 6px 14px; cursor: pointer; font-size: 10px; font-weight: 600;
+    color: var(--t3); transition: color 0.2s; letter-spacing: 0.3px;
+  }
+  .bnav-item.active { color: var(--cyan); }
+  .bnav-ico { font-size: 20px; }
+
+  /* ═══ RESPONSIVE ═══ */
+  @media (max-width: 1100px) {
+    .track-layout { grid-template-columns: 1fr 280px; }
+  }
+  @media (max-width: 960px) {
+    .track-layout { grid-template-columns: 1fr; height: auto; }
+    .metrics { max-height: 55vh; }
+  }
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; padding: 16px 16px 80px; }
+    .bnav { display: block; }
+    .g4 { grid-template-columns: 1fr 1fr; }
+    .g3 { grid-template-columns: 1fr 1fr; }
+    .g2 { grid-template-columns: 1fr; }
+    .ph-title { font-size: 22px; }
+  }
+  @media (max-width: 420px) {
+    .g4 { grid-template-columns: 1fr 1fr; }
+    .sport-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* ═══ UTILITIES ═══ */
+  .mb12 { margin-bottom: 12px; }
+  .mb16 { margin-bottom: 16px; }
+  .mb20 { margin-bottom: 20px; }
+  .cyan { color: var(--cyan); }
+  .emerald { color: var(--emerald); }
+  .gold { color: var(--gold); }
+  .rose { color: var(--rose); }
+  .t2 { color: var(--t2); }
+  .fw9 { font-weight: 900; }
+  .text-center { text-align: center; }
+  </style>
+</head>
+<body>
+
+<!-- ═══ LOADING ═══ -->
+<div id="loader">
+  <div class="loader-logo">🏃</div>
+  <div class="loader-title">SportAnalyzer Pro</div>
+  <div class="loader-msg" id="loaderMsg">Iniciando motor de visión artificial…</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+</div>
+
+<!-- ═══ TOASTS ═══ -->
+<div id="toasts"></div>
+
+<!-- ═══ MODAL: NUEVA SESIÓN ═══ -->
+<div class="overlay" id="mStart">
+  <div class="modal">
+    <div class="modal-t">Nueva Sesión</div>
+    <div class="modal-st">Configura tu análisis de movimiento</div>
+
+    <div class="mb20">
+      <div class="field-lbl">Deporte</div>
+      <div class="sport-grid" id="mSports">
+        <div class="sport-opt sel" data-s="running"><span class="sport-ico">🏃</span><div class="sport-lbl">Running</div></div>
+        <div class="sport-opt" data-s="racket"><span class="sport-ico">🎾</span><div class="sport-lbl">Raqueta</div></div>
+        <div class="sport-opt" data-s="gym"><span class="sport-ico">🏋️</span><div class="sport-lbl">Gym</div></div>
+        <div class="sport-opt" data-s="general"><span class="sport-ico">⚡</span><div class="sport-lbl">General</div></div>
+      </div>
+    </div>
+
+    <div class="mb20">
+      <div class="field-lbl">Nombre de sesión <span class="t2" style="font-size:10px;text-transform:none;letter-spacing:0">(opcional)</span></div>
+      <input class="inp" id="sessName" type="text" placeholder="Ej: Entrenamiento matutino">
+    </div>
+
+    <div class="tip mb20">
+      💡 <strong>Consejo:</strong> Asegúrate de que tu cuerpo completo sea visible y la zona esté bien iluminada.
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" onclick="closeModal('mStart')" style="flex:1">Cancelar</button>
+      <button class="btn btn-p btn-lg" onclick="startSession()" style="flex:2">▶&nbsp; Iniciar Análisis</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: RESULTADOS ═══ -->
+<div class="overlay" id="mResults">
+  <div class="modal" style="max-width:600px">
+    <div class="modal-t" id="rTitle">Sesión completada</div>
+    <div class="modal-st">Análisis detallado de tu sesión</div>
+    <div id="rBody"></div>
+    <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+      <button class="btn btn-ghost" onclick="closeModal('mResults')" style="flex:1;min-width:90px">Cerrar</button>
+      <button class="btn btn-outline" onclick="genPDF()" style="flex:1;min-width:90px">📄 PDF</button>
+      <button class="btn btn-p" onclick="closeModal('mResults');showView('history')" style="flex:1;min-width:90px">Ver historial</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ APP ═══ -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-top">
+      <div class="logo">
+        <div class="logo-mark">🏃</div>
+        <div class="logo-text">
+          <div class="logo-name">SportAnalyzer</div>
+          <div class="logo-tag">Pro Edition</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="nav-body">
+      <span class="nav-label">Principal</span>
+      <div class="nav-item active" onclick="showView('home')">
+        <span class="nav-icon">🏠</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showView('tracking')">
+        <span class="nav-icon">📷</span> Análisis en Vivo
+      </div>
+
+      <span class="nav-label">Resultados</span>
+      <div class="nav-item" onclick="showView('history')">
+        <span class="nav-icon">📊</span> Historial
+      </div>
+      <div class="nav-item" onclick="showView('reports')">
+        <span class="nav-icon">📋</span> Informes
+      </div>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-status">
+        <div class="status-led" id="sidebarLed"></div>
+        <span id="sidebarStatus">Sin sesión activa</span>
+      </div>
+      <div class="sidebar-tip">
+        💡 Para mejor precisión mantén el cuerpo completo encuadrado y buena iluminación frontal.
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ░░ HOME ░░ -->
+    <div class="view active" id="view-home">
+      <div class="ph">
+        <div>
+          <div class="ph-eyebrow">Panel de Control</div>
+          <div class="ph-title">Dashboard</div>
+          <div class="ph-sub">Resumen de tu rendimiento deportivo</div>
+        </div>
+        <button class="btn btn-p btn-lg" onclick="openModal('mStart')">▶&nbsp; Nueva Sesión</button>
+      </div>
+
+      <!-- Stats -->
+      <div class="g4 mb16">
+        <div class="scard">
+          <span class="scard-ico">📊</span>
+          <div class="scard-lbl">Total Sesiones</div>
+          <div class="scard-val" id="sSessions">0</div>
+        </div>
+        <div class="scard">
+          <span class="scard-ico">⚡</span>
+          <div class="scard-lbl">Calidad Media</div>
+          <div class="scard-val cyan" id="sQuality">—</div>
+          <div class="scard-unit">de 100</div>
+        </div>
+        <div class="scard">
+          <span class="scard-ico">⏱️</span>
+          <div class="scard-lbl">Tiempo Analizado</div>
+          <div class="scard-val" id="sTime">0</div>
+          <div class="scard-unit">minutos</div>
+        </div>
+        <div class="scard">
+          <span class="scard-ico">🏆</span>
+          <div class="scard-lbl">Mejor Sesión</div>
+          <div class="scard-val emerald" id="sBest">—</div>
+        </div>
+      </div>
+
+      <!-- Quick start + recents -->
+      <div class="g2 mb16">
+        <div class="card">
+          <div class="card-t">Inicio Rápido</div>
+          <div class="sport-grid">
+            <div class="sport-opt" onclick="quickStart('running')"><span class="sport-ico">🏃</span><div class="sport-lbl">Running</div></div>
+            <div class="sport-opt" onclick="quickStart('racket')"><span class="sport-ico">🎾</span><div class="sport-lbl">Raqueta</div></div>
+            <div class="sport-opt" onclick="quickStart('gym')"><span class="sport-ico">🏋️</span><div class="sport-lbl">Gym</div></div>
+            <div class="sport-opt" onclick="quickStart('general')"><span class="sport-ico">⚡</span><div class="sport-lbl">General</div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-t">Últimas Sesiones</div>
+          <div id="homeRecent"></div>
+        </div>
+      </div>
+
+      <!-- Progress chart -->
+      <div class="card">
+        <div class="card-t">Evolución de Calidad</div>
+        <div class="ch ch-200"><canvas id="homeChart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ░░ TRACKING ░░ -->
+    <div class="view" id="view-tracking">
+      <div class="ph">
+        <div>
+          <div class="ph-eyebrow" id="trackEye">Análisis en Tiempo Real</div>
+          <div class="ph-title">Tracking en Vivo</div>
+          <div class="ph-sub" id="trackSub">Activa la cámara para comenzar</div>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-ghost" onclick="flipCam()">🔄&nbsp; Cámara</button>
+          <button class="btn btn-ghost" onclick="openModal('mStart')">⚙️&nbsp; Config</button>
+        </div>
+      </div>
+
+      <div class="track-layout">
+        <!-- Camera feed -->
+        <div class="cam-box">
+          <video id="vid" autoplay playsinline muted></video>
+          <canvas id="cvs"></canvas>
+
+          <!-- Top HUD -->
+          <div class="cam-hud">
+            <div class="cam-pill">
+              <div class="dot" id="camDot"></div>
+              <span id="camTxt">Iniciando…</span>
+            </div>
+            <div class="rec-pill" id="recPill">⏺&nbsp; 00:00</div>
+          </div>
+
+          <!-- No person -->
+          <div class="no-person" id="noPerson">
+            <div class="no-person-ico">🧍</div>
+            <div class="no-person-txt">Posiciónate frente a la cámara</div>
+          </div>
+
+          <!-- Bottom controls -->
+          <div class="cam-controls">
+            <div class="ctrl-btn" onclick="flipCam()" title="Cambiar cámara">🔄</div>
+            <div class="rec-btn" id="recBtn" onclick="toggleRec()"></div>
+            <div class="ctrl-btn" onclick="openModal('mStart')" title="Configurar">⚙️</div>
+          </div>
+        </div>
+
+        <!-- Metrics panel -->
+        <div class="metrics">
+
+          <!-- Quality ring -->
+          <div class="card q-card">
+            <div class="card-t">Calidad de Movimiento</div>
+            <div class="q-ring-wrap">
+              <svg width="120" height="120" viewBox="0 0 120 120" style="transform:rotate(-90deg)">
+                <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="8"/>
+                <circle cx="60" cy="60" r="50" fill="none" stroke="var(--cyan2)" stroke-width="8"
+                  stroke-dasharray="314" stroke-dashoffset="314" id="qCircle"
+                  stroke-linecap="round" style="transition:stroke-dashoffset .35s,stroke .35s"/>
+              </svg>
+              <div class="q-ring-val" id="qScore">—</div>
+            </div>
+            <div class="q-lbl" id="qLbl">Sin datos</div>
+            <div class="q-sublbl" id="qSub">Espera la detección de pose</div>
+          </div>
+
+          <!-- Joint angles -->
+          <div class="card">
+            <div class="card-t">Ángulos Articulares</div>
+            <div class="mrow"><div><div class="mrow-l">🦵 Rodilla Izq.</div><div class="abar"><div class="abar-f" id="bKL" style="width:0%"></div></div></div><div class="mrow-v" id="mKL">—°</div></div>
+            <div class="mrow"><div><div class="mrow-l">🦵 Rodilla Der.</div><div class="abar"><div class="abar-f" id="bKR" style="width:0%"></div></div></div><div class="mrow-v" id="mKR">—°</div></div>
+            <div class="mrow"><div><div class="mrow-l">🏃 Cadera Izq.</div><div class="abar"><div class="abar-f" id="bHL" style="width:0%"></div></div></div><div class="mrow-v" id="mHL">—°</div></div>
+            <div class="mrow"><div><div class="mrow-l">🏃 Cadera Der.</div><div class="abar"><div class="abar-f" id="bHR" style="width:0%"></div></div></div><div class="mrow-v" id="mHR">—°</div></div>
+            <div class="mrow"><div><div class="mrow-l">💪 Codo Izq.</div><div class="abar"><div class="abar-f" id="bEL" style="width:0%"></div></div></div><div class="mrow-v" id="mEL">—°</div></div>
+            <div class="mrow"><div><div class="mrow-l">💪 Codo Der.</div><div class="abar"><div class="abar-f" id="bER" style="width:0%"></div></div></div><div class="mrow-v" id="mER">—°</div></div>
+            <div class="mrow"><div><div class="mrow-l">🧍 Incl. Tronco</div><div class="abar"><div class="abar-f" id="bTR" style="width:0%"></div></div></div><div class="mrow-v" id="mTR">—°</div></div>
+          </div>
+
+          <!-- Symmetry -->
+          <div class="card">
+            <div class="card-t">Simetría y Balance</div>
+            <div class="mrow"><div class="mrow-l">Simetría L / D</div><div class="mrow-v emerald" id="mSym">—%</div></div>
+            <div class="pbar" style="margin:8px 0 14px"><div class="pbar-f" id="pSym" style="width:0%"></div></div>
+            <div class="mrow"><div class="mrow-l">Estabilidad Core</div><div class="mrow-v" id="mStab">—%</div></div>
+          </div>
+
+          <!-- Sport specific -->
+          <div class="card" id="sportCard">
+            <div class="card-t" id="sportCardT">Métricas de Deporte</div>
+            <div id="sportMetrics"><div class="mrow-l">Selecciona un deporte</div></div>
+          </div>
+
+          <!-- Live chart -->
+          <div class="card">
+            <div class="card-t">Calidad en Tiempo Real</div>
+            <div class="ch ch-110"><canvas id="liveChart"></canvas></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ░░ HISTORY ░░ -->
+    <div class="view" id="view-history">
+      <div class="ph">
+        <div>
+          <div class="ph-eyebrow">Registro</div>
+          <div class="ph-title">Historial de Sesiones</div>
+          <div class="ph-sub">Todas tus sesiones de análisis guardadas</div>
+        </div>
+        <button class="btn btn-danger" onclick="clearAll()">🗑️&nbsp; Limpiar todo</button>
+      </div>
+      <div id="histList"></div>
+    </div>
+
+    <!-- ░░ REPORTS ░░ -->
+    <div class="view" id="view-reports">
+      <div class="ph">
+        <div>
+          <div class="ph-eyebrow">Análisis</div>
+          <div class="ph-title">Informes de Rendimiento</div>
+          <div class="ph-sub">Estadísticas globales y progresión</div>
+        </div>
+        <button class="btn btn-p" onclick="exportSummaryPDF()">📄&nbsp; Exportar PDF</button>
+      </div>
+      <div id="reportsBody"></div>
+    </div>
+
+  </main>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="bnav">
+  <div class="bnav-items">
+    <div class="bnav-item active" onclick="showView('home')"><span class="bnav-ico">🏠</span>Inicio</div>
+    <div class="bnav-item" onclick="showView('tracking')"><span class="bnav-ico">📷</span>Análisis</div>
+    <div class="bnav-item" onclick="showView('history')"><span class="bnav-ico">📊</span>Historial</div>
+    <div class="bnav-item" onclick="showView('reports')"><span class="bnav-ico">📋</span>Informes</div>
+  </div>
+</nav>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   SPORT ANALYZER PRO — Application Logic
+   ═══════════════════════════════════════════════════ */
+
+let PoseLandmarker, FilesetResolver;
+
+const S = {
+  sport: 'running', landmarker: null, stream: null,
+  tracking: false, recording: false, recStart: 0, recInterval: null,
+  frameData: [], curSession: null, facingMode: 'user',
+  liveBuf: Array(80).fill(null), liveChart: null, homeChartInst: null,
+  noPersonFrames: 0,
+};
+
+const P = {
+  L_SHOULDER:11, R_SHOULDER:12, L_ELBOW:13, R_ELBOW:14,
+  L_WRIST:15,    R_WRIST:16,    L_HIP:23,   R_HIP:24,
+  L_KNEE:25,     R_KNEE:26,     L_ANKLE:27, R_ANKLE:28,
+};
+
+const SPORTS = {
+  running: { name:'Running',      icon:'🏃', idealKnee:[20,90],   idealHip:[160,180], idealTrunk:[0,15] },
+  racket:  { name:'Raqueta',      icon:'🎾', idealKnee:[110,170], idealHip:[140,175], idealTrunk:[0,25] },
+  gym:     { name:'Gym / Fuerza', icon:'🏋️', idealKnee:[70,110],  idealHip:[70,120],  idealTrunk:[0,40] },
+  general: { name:'General',      icon:'⚡', idealKnee:[0,180],   idealHip:[0,180],   idealTrunk:[0,45] },
+};
+
+const CONN = [
+  [11,12],[11,13],[13,15],[12,14],[14,16],
+  [11,23],[12,24],[23,24],
+  [23,25],[25,27],[27,29],[27,31],
+  [24,26],[26,28],[28,30],[28,32],
+];
+
+/* ═══ INIT ═══ */
+async function init() {
+  try {
+    setMsg('Cargando librería de visión…');
+    if (typeof window.PoseLandmarker !== 'undefined') {
+      PoseLandmarker  = window.PoseLandmarker;
+      FilesetResolver = window.FilesetResolver;
+    } else if (window.vision) {
+      PoseLandmarker  = window.vision.PoseLandmarker;
+      FilesetResolver = window.vision.FilesetResolver;
+    } else {
+      const mod = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs');
+      PoseLandmarker  = mod.PoseLandmarker;
+      FilesetResolver = mod.FilesetResolver;
+    }
+    setMsg('Descargando modelo de pose…');
+    const wasm = await FilesetResolver.forVisionTasks(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+    );
+    S.landmarker = await PoseLandmarker.createFromOptions(wasm, {
+      baseOptions: {
+        modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
+        delegate: 'GPU'
+      },
+      runningMode: 'VIDEO', numPoses: 1,
+      minPoseDetectionConfidence: 0.5,
+      minPosePresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+    });
+    document.getElementById('loader').style.display = 'none';
+    initCharts();
+    refreshHome();
+    toast('Motor de análisis listo ✓', 'ok');
+  } catch(e) {
+    console.error(e);
+    document.getElementById('loader').innerHTML = `
+      <div style="text-align:center;padding:24px;max-width:380px;z-index:1;position:relative">
+        <div style="font-size:52px;margin-bottom:16px">⚠️</div>
+        <div style="font-size:20px;font-weight:800;margin-bottom:8px">Error al inicializar</div>
+        <div style="color:var(--t2);font-size:13px;margin-bottom:20px;line-height:1.6">
+          ${e.message||'Verifica tu conexión a internet.'}<br>
+          La app necesita conexión para descargar el modelo de IA la primera vez.
+        </div>
+        <button class="btn btn-p btn-lg" onclick="location.reload()">🔄&nbsp; Reintentar</button>
+      </div>`;
+  }
+}
+function setMsg(m) { const e = document.getElementById('loaderMsg'); if(e) e.textContent = m; }
+
+/* ═══ NAVIGATION ═══ */
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item,.bnav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('view-' + id).classList.add('active');
+  document.querySelectorAll(`[onclick*="showView('${id}')"]`).forEach(el => el.classList.add('active'));
+  if (id === 'tracking')  { startCam(); syncSportUI(); }
+  else if (id === 'history') renderHistory();
+  else if (id === 'reports') renderReports();
+  else if (id === 'home')    refreshHome();
+}
+
+/* ═══ CAMERA ═══ */
+async function startCam() {
+  if (S.tracking) return;
+  const vid = document.getElementById('vid');
+  const cvs = document.getElementById('cvs');
+  const ctx = cvs.getContext('2d');
+  setCamStatus('', 'Iniciando cámara…');
+  try {
+    S.stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: S.facingMode, width:{ideal:1280}, height:{ideal:720} }
+    });
+    vid.srcObject = S.stream;
+    vid.onloadedmetadata = () => {
+      cvs.width = vid.videoWidth; cvs.height = vid.videoHeight;
+      S.tracking = true;
+      setCamStatus('on', 'Tracking activo');
+      setSidebarStatus('on', 'Tracking activo');
+      loop(vid, cvs, ctx);
+    };
+  } catch(e) {
+    setCamStatus('', 'Sin acceso a cámara');
+    toast('Error de cámara: ' + e.message, 'err');
+  }
+}
+
+function stopCam() {
+  if (S.stream) { S.stream.getTracks().forEach(t => t.stop()); S.stream = null; }
+  S.tracking = false;
+}
+
+function flipCam() {
+  S.facingMode = S.facingMode === 'user' ? 'environment' : 'user';
+  stopCam(); S.tracking = false; startCam();
+}
+
+function setCamStatus(cls, txt) {
+  const d = document.getElementById('camDot');
+  d.className = 'dot' + (cls ? ' ' + cls : '');
+  document.getElementById('camTxt').textContent = txt;
+}
+
+function setSidebarStatus(cls, txt) {
+  const d = document.getElementById('sidebarLed');
+  d.className = 'status-led' + (cls ? ' ' + cls : '');
+  document.getElementById('sidebarStatus').textContent = txt;
+}
+
+let lastVT = -1;
+async function loop(vid, cvs, ctx) {
+  if (!S.tracking || !S.landmarker) { requestAnimationFrame(() => loop(vid, cvs, ctx)); return; }
+  if (vid.currentTime !== lastVT) {
+    lastVT = vid.currentTime;
+    let res;
+    try { res = S.landmarker.detectForVideo(vid, performance.now()); } catch(e) {}
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    if (res && res.landmarks && res.landmarks.length > 0) {
+      const lm = res.landmarks[0];
+      drawPose(ctx, lm, cvs.width, cvs.height);
+      updateMetrics(lm);
+      S.noPersonFrames = 0;
+      document.getElementById('noPerson').classList.remove('show');
+    } else {
+      S.noPersonFrames++;
+      if (S.noPersonFrames > 10) { clearMetricsUI(); document.getElementById('noPerson').classList.add('show'); }
+    }
+  }
+  requestAnimationFrame(() => loop(vid, cvs, ctx));
+}
+
+/* ═══ SKELETON ═══ */
+function drawPose(ctx, lm, w, h) {
+  ctx.lineWidth = 2.5;
+  CONN.forEach(([a, b]) => {
+    if (lm[a].visibility < 0.35 || lm[b].visibility < 0.35) return;
+    const left = [11,13,15,23,25,27,29,31].includes(a);
+    const grad = ctx.createLinearGradient(lm[a].x*w, lm[a].y*h, lm[b].x*w, lm[b].y*h);
+    grad.addColorStop(0, left ? 'rgba(34,211,238,0.85)' : 'rgba(129,140,248,0.85)');
+    grad.addColorStop(1, left ? 'rgba(6,182,212,0.85)'  : 'rgba(99,102,241,0.85)');
+    ctx.strokeStyle = grad;
+    ctx.beginPath(); ctx.moveTo(lm[a].x*w, lm[a].y*h); ctx.lineTo(lm[b].x*w, lm[b].y*h); ctx.stroke();
+  });
+  const KEY = new Set([11,12,13,14,15,16,23,24,25,26,27,28]);
+  lm.forEach((pt, i) => {
+    if (pt.visibility < 0.35) return;
+    const r = KEY.has(i) ? 5 : 3;
+    ctx.beginPath(); ctx.arc(pt.x*w, pt.y*h, r, 0, Math.PI*2);
+    ctx.fillStyle = KEY.has(i) ? '#ffffff' : 'rgba(255,255,255,0.45)';
+    ctx.fill();
+    if (KEY.has(i)) {
+      ctx.beginPath(); ctx.arc(pt.x*w, pt.y*h, r+2, 0, Math.PI*2);
+      ctx.strokeStyle = 'rgba(34,211,238,0.3)'; ctx.lineWidth = 1.5; ctx.stroke();
+      ctx.lineWidth = 2.5;
+    }
+  });
+}
+
+/* ═══ MATH ═══ */
+function angle(a, b, c) {
+  const r = Math.atan2(c.y-b.y, c.x-b.x) - Math.atan2(a.y-b.y, a.x-b.x);
+  let d = Math.abs(r * 180 / Math.PI);
+  return d > 180 ? 360 - d : d;
+}
+
+function calcFrame(lm) {
+  const kL = angle(lm[P.L_HIP], lm[P.L_KNEE], lm[P.L_ANKLE]);
+  const kR = angle(lm[P.R_HIP], lm[P.R_KNEE], lm[P.R_ANKLE]);
+  const hL = angle(lm[P.L_SHOULDER], lm[P.L_HIP], lm[P.L_KNEE]);
+  const hR = angle(lm[P.R_SHOULDER], lm[P.R_HIP], lm[P.R_KNEE]);
+  const eL = angle(lm[P.L_SHOULDER], lm[P.L_ELBOW], lm[P.L_WRIST]);
+  const eR = angle(lm[P.R_SHOULDER], lm[P.R_ELBOW], lm[P.R_WRIST]);
+  const msx = (lm[P.L_SHOULDER].x + lm[P.R_SHOULDER].x)/2;
+  const msy = (lm[P.L_SHOULDER].y + lm[P.R_SHOULDER].y)/2;
+  const mhx = (lm[P.L_HIP].x + lm[P.R_HIP].x)/2;
+  const mhy = (lm[P.L_HIP].y + lm[P.R_HIP].y)/2;
+  const trunk = Math.abs(Math.atan2(msx-mhx, mhy-msy) * 180/Math.PI);
+  const sym = Math.max(0, 100 - ((Math.abs(kL-kR) + Math.abs(hL-hR) + Math.abs(eL-eR))/3)*1.4);
+  return { kL, kR, hL, hR, eL, eR, trunk, sym };
+}
+
+function qualityScore(f, sport) {
+  const sp = SPORTS[sport];
+  const [mnK,mxK] = sp.idealKnee; const kAvg = (f.kL+f.kR)/2;
+  const [mnH,mxH] = sp.idealHip;  const hAvg = (f.hL+f.hR)/2;
+  const [,mxT]    = sp.idealTrunk;
+  const kS = inR(kAvg,mnK,mxK) ? 100 : Math.max(0,100-near(kAvg,mnK,mxK)*1.5);
+  const hS = inR(hAvg,mnH,mxH) ? 100 : Math.max(0,100-near(hAvg,mnH,mxH)*1.5);
+  const tS = f.trunk<=mxT ? 100 : Math.max(0,100-(f.trunk-mxT)*2.5);
+  return Math.round(Math.min(100, Math.max(0, f.sym*.30 + kS*.25 + hS*.25 + tS*.20)));
+}
+function inR(v,a,b) { return v>=a && v<=b; }
+function near(v,a,b) { return Math.min(Math.abs(v-a),Math.abs(v-b)); }
+
+function qlabel(q) {
+  if (q >= 85) return { txt:'Excelente', clr:'var(--emerald)' };
+  if (q >= 70) return { txt:'Bueno',     clr:'var(--cyan)' };
+  if (q >= 55) return { txt:'Regular',   clr:'var(--gold)' };
+  return             { txt:'Mejorable',  clr:'var(--rose)' };
+}
+
+/* ═══ METRICS UI ═══ */
+function updateMetrics(lm) {
+  const f = calcFrame(lm);
+  const q = qualityScore(f, S.sport);
+  const { txt, clr } = qlabel(q);
+
+  const circ = document.getElementById('qCircle');
+  circ.style.strokeDashoffset = 314 - (q/100)*314;
+  circ.style.stroke = clr;
+  document.getElementById('qScore').textContent = q;
+  document.getElementById('qScore').style.color  = clr;
+  document.getElementById('qLbl').textContent    = txt;
+  document.getElementById('qSub').textContent    = q>=80 ? '¡Sigue así!' : q>=60 ? 'En buen camino' : 'Mejora la técnica';
+
+  setA('mKL','bKL',f.kL); setA('mKR','bKR',f.kR);
+  setA('mHL','bHL',f.hL); setA('mHR','bHR',f.hR);
+  setA('mEL','bEL',f.eL); setA('mER','bER',f.eR);
+  setA('mTR','bTR',f.trunk,50);
+
+  const sym = Math.round(f.sym);
+  document.getElementById('mSym').textContent  = sym + '%';
+  document.getElementById('pSym').style.width  = sym + '%';
+  document.getElementById('mStab').textContent = Math.round(f.sym*.92) + '%';
+
+  S.liveBuf.push(q);
+  if (S.liveBuf.length > 80) S.liveBuf.shift();
+  if (S.liveChart) { S.liveChart.data.datasets[0].data = [...S.liveBuf]; S.liveChart.update('none'); }
+
+  updateSportPanel(f, q);
+
+  if (S.recording) {
+    S.frameData.push({ t:Date.now()-S.recStart, q,
+      kL:Math.round(f.kL), kR:Math.round(f.kR), hL:Math.round(f.hL), hR:Math.round(f.hR),
+      eL:Math.round(f.eL), eR:Math.round(f.eR), tr:Math.round(f.trunk), sy:Math.round(f.sym) });
+  }
+}
+
+function setA(mId, bId, val, max=180) {
+  document.getElementById(mId).textContent = Math.round(val) + '°';
+  document.getElementById(bId).style.width = Math.min(100, val/max*100) + '%';
+}
+
+function clearMetricsUI() {
+  ['mKL','mKR','mHL','mHR','mEL','mER','mTR','mSym','mStab'].forEach(id => {
+    const e=document.getElementById(id); if(e) e.textContent='—';
+  });
+  ['bKL','bKR','bHL','bHR','bEL','bER','bTR','pSym'].forEach(id => {
+    const e=document.getElementById(id); if(e) e.style.width='0%';
+  });
+  document.getElementById('qScore').textContent = '—';
+  document.getElementById('qLbl').textContent   = 'Posiciónate en cámara';
+  document.getElementById('qSub').textContent   = 'Asegúrate de ser visible';
+}
+
+function updateSportPanel(f, q) {
+  const el = document.getElementById('sportMetrics');
+  if (S.sport === 'running') {
+    const bal = Math.round(100 - Math.abs(f.kL-f.kR));
+    el.innerHTML = row('Inclinación Tronco', Math.round(f.trunk)+'°') +
+      row('Balance de Piernas', bal+'%') +
+      row('Acción de Brazos', Math.round((f.eL+f.eR)/2)+'°') +
+      `<div class="tip" style="margin-top:10px">💡 ${
+        f.trunk>15 ? 'Mantén el tronco más erguido' :
+        f.sym<75   ? 'Trabaja la simetría entre piernas' :
+        '<strong>¡Buena técnica de carrera!</strong>'}</div>`;
+  } else if (S.sport === 'racket') {
+    el.innerHTML = row('Extensión Codo Golpe', Math.round(Math.max(f.eL,f.eR))+'°') +
+      row('Rotación Cadera', Math.round(Math.abs(f.hL-f.hR))+'°') +
+      row('Flexión Rodillas', Math.round((f.kL+f.kR)/2)+'°') +
+      `<div class="tip" style="margin-top:10px">💡 ${
+        Math.max(f.eL,f.eR)<130 ? 'Extiende más el codo en el golpeo' :
+        '<strong>Buena extensión en el golpeo</strong>'}</div>`;
+  } else if (S.sport === 'gym') {
+    const kA = Math.round((f.kL+f.kR)/2);
+    el.innerHTML = row('Profundidad Rodilla', kA+'°') +
+      row('Ángulo Espalda', Math.round(f.trunk)+'°') +
+      row('Alineación Rodillas', Math.round(100-Math.abs(f.kL-f.kR))+'%') +
+      `<div class="tip" style="margin-top:10px">💡 ${
+        f.trunk>40 ? 'Cuidado con la inclinación de espalda' :
+        kA<80 ? '<strong>Buen rango de movimiento</strong>' :
+        'Intenta bajar más en el ejercicio'}</div>`;
+  } else {
+    el.innerHTML = row('ROM Promedio', Math.round((f.kL+f.kR+f.hL+f.hR)/4)+'°') +
+      row('Simetría', Math.round(f.sym)+'%') +
+      row('Inclinación Tronco', Math.round(f.trunk)+'°');
+  }
+}
+
+function row(l,v) {
+  return `<div class="mrow"><div class="mrow-l">${l}</div><div class="mrow-v">${v}</div></div>`;
+}
+
+function syncSportUI() {
+  const sp = SPORTS[S.sport];
+  document.getElementById('trackSub').textContent   = sp.icon + ' Modo: ' + sp.name;
+  document.getElementById('trackEye').textContent   = 'Análisis · ' + sp.name;
+  document.getElementById('sportCardT').textContent = sp.icon + ' ' + sp.name;
+}
+
+/* ═══ RECORDING ═══ */
+function toggleRec() { S.recording ? stopRec() : startRec(); }
+
+function startRec() {
+  S.recording = true; S.frameData = []; S.recStart = Date.now();
+  document.getElementById('recBtn').classList.add('on');
+  document.getElementById('recPill').classList.add('on');
+  setSidebarStatus('rec', 'Grabando…');
+  S.recInterval = setInterval(() => {
+    const s = Math.floor((Date.now()-S.recStart)/1000);
+    document.getElementById('recPill').textContent =
+      `⏺ ${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+  }, 1000);
+  toast('Grabación iniciada', 'ok');
+}
+
+function stopRec() {
+  S.recording = false;
+  clearInterval(S.recInterval);
+  document.getElementById('recBtn').classList.remove('on');
+  document.getElementById('recPill').classList.remove('on');
+  setSidebarStatus('on', 'Tracking activo');
+  if (S.frameData.length < 15) { toast('Sesión muy corta, no guardada', 'err'); return; }
+  const sess = saveSession();
+  showResults(sess);
+  toast('Sesión guardada correctamente ✓', 'ok');
+}
+
+/* ═══ SESSION ═══ */
+function saveSession() {
+  const d = S.frameData;
+  const dur  = d.length ? Math.round(d[d.length-1].t/1000) : 0;
+  const avgQ = Math.round(d.reduce((a,x)=>a+x.q,0)/d.length);
+  const avgS = Math.round(d.reduce((a,x)=>a+x.sy,0)/d.length);
+  const maxQ = Math.max(...d.map(x=>x.q));
+  const name = document.getElementById('sessName').value.trim() ||
+    SPORTS[S.sport].name + ' · ' + new Date().toLocaleDateString('es-ES');
+  const sess = { id:Date.now(), date:new Date().toISOString(), sport:S.sport,
+    name, dur, avgQ, avgS, maxQ, frames:d.length, data:d };
+  const all = getSessions(); all.unshift(sess);
+  localStorage.setItem('sa_sessions', JSON.stringify(all));
+  S.curSession = sess; return sess;
+}
+
+function getSessions() {
+  try { return JSON.parse(localStorage.getItem('sa_sessions')||'[]'); } catch { return []; }
+}
+
+/* ═══ HOME ═══ */
+function refreshHome() {
+  const all = getSessions();
+  document.getElementById('sSessions').textContent = all.length;
+  if (!all.length) {
+    document.getElementById('sQuality').textContent = '—';
+    document.getElementById('sTime').textContent    = '0';
+    document.getElementById('sBest').textContent    = '—';
+    document.getElementById('homeRecent').innerHTML = `<div class="empty" style="padding:24px 0">
+      <span class="empty-i">📊</span>
+      <div class="empty-t">Sin sesiones aún</div>
+      <div class="empty-d">Inicia tu primera sesión</div></div>`;
+    return;
+  }
+  document.getElementById('sQuality').textContent = Math.round(all.reduce((a,s)=>a+s.avgQ,0)/all.length);
+  document.getElementById('sTime').textContent    = Math.round(all.reduce((a,s)=>a+(s.dur||0),0)/60);
+  document.getElementById('sBest').textContent    = Math.max(...all.map(s=>s.avgQ));
+
+  document.getElementById('homeRecent').innerHTML = all.slice(0,5).map(s => {
+    const sp = SPORTS[s.sport]||SPORTS.general;
+    const ql = qlabel(s.avgQ);
+    return `<div class="sitem" onclick="viewSess(${s.id})">
+      <div class="sitem-ico">${sp.icon}</div>
+      <div class="sitem-info"><div class="sitem-name">${s.name}</div>
+      <div class="sitem-meta">${new Date(s.date).toLocaleDateString('es-ES')} · ${s.dur}s</div></div>
+      <div class="sitem-score" style="color:${ql.clr}">${s.avgQ}</div></div>`;
+  }).join('');
+
+  if (S.homeChartInst) {
+    const rec = all.slice(0,10).reverse();
+    S.homeChartInst.data.labels = rec.map(s=>new Date(s.date).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'}));
+    S.homeChartInst.data.datasets[0].data = rec.map(s=>s.avgQ);
+    S.homeChartInst.update();
+  }
+}
+
+/* ═══ HISTORY ═══ */
+function renderHistory() {
+  const all = getSessions();
+  const el  = document.getElementById('histList');
+  if (!all.length) {
+    el.innerHTML = `<div class="empty"><span class="empty-i">📊</span>
+      <div class="empty-t">Sin sesiones registradas</div>
+      <div class="empty-d">Completa tu primera sesión para ver el historial</div></div>`;
+    return;
+  }
+  el.innerHTML = all.map(s => {
+    const sp = SPORTS[s.sport]||SPORTS.general;
+    const ql = qlabel(s.avgQ);
+    const bc = s.avgQ>=70?'b-ok':s.avgQ>=55?'b-wn':'b-bd';
+    return `<div class="sitem" onclick="viewSess(${s.id})">
+      <div class="sitem-ico">${sp.icon}</div>
+      <div class="sitem-info" style="min-width:0">
+        <div class="sitem-name">${s.name}</div>
+        <div class="sitem-meta">${new Date(s.date).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}
+          · ${Math.floor(s.dur/60)}m ${s.dur%60}s · ${s.frames} frames</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="sitem-score" style="color:${ql.clr}">${s.avgQ}</div>
+        <span class="badge ${bc}">${ql.txt}</span>
+      </div>
+      <button onclick="event.stopPropagation();delSess(${s.id})"
+        style="background:none;border:none;color:var(--t3);cursor:pointer;padding:6px;font-size:16px;flex-shrink:0;transition:color .2s"
+        onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--t3)'">🗑️</button>
+    </div>`;
+  }).join('');
+}
+
+function delSess(id) {
+  if (!confirm('¿Eliminar esta sesión?')) return;
+  const all = getSessions().filter(s=>s.id!==id);
+  localStorage.setItem('sa_sessions', JSON.stringify(all));
+  renderHistory(); refreshHome();
+}
+
+function clearAll() {
+  if (!confirm('¿Eliminar todo el historial? Esta acción no se puede deshacer.')) return;
+  localStorage.removeItem('sa_sessions');
+  renderHistory(); refreshHome();
+  toast('Historial eliminado', 'ok');
+}
+
+function viewSess(id) {
+  const s = getSessions().find(s=>s.id===id);
+  if (s) { S.curSession = s; showResults(s); }
+}
+
+/* ═══ RESULTS MODAL ═══ */
+function showResults(s) {
+  const sp = SPORTS[s.sport]||SPORTS.general;
+  const ql = qlabel(s.avgQ);
+  document.getElementById('rTitle').textContent = `${sp.icon} ${s.name}`;
+  const avg = k => Math.round(s.data.reduce((a,d)=>a+(d[k]||0),0)/s.data.length);
+
+  document.getElementById('rBody').innerHTML = `
+    <div class="g3 mb16">
+      <div class="scard text-center">
+        <div class="scard-lbl">Calidad Media</div>
+        <div class="scard-val" style="color:${ql.clr}">${s.avgQ}</div>
+        <div class="scard-unit">${ql.txt}</div>
+      </div>
+      <div class="scard text-center">
+        <div class="scard-lbl">Simetría</div>
+        <div class="scard-val emerald">${s.avgS}%</div>
+      </div>
+      <div class="scard text-center">
+        <div class="scard-lbl">Duración</div>
+        <div class="scard-val">${Math.floor(s.dur/60)}:${String(s.dur%60).padStart(2,'0')}</div>
+      </div>
+    </div>
+    <div class="card mb16">
+      <div class="card-t">Calidad durante la sesión</div>
+      <div class="ch ch-140"><canvas id="rChart"></canvas></div>
+    </div>
+    <div class="card mb16">
+      <div class="card-t">Promedio de Ángulos</div>
+      <div class="g2">
+        ${[['🦵 Rodilla Izq.','kL'],['🦵 Rodilla Der.','kR'],
+           ['🏃 Cadera Izq.','hL'], ['🏃 Cadera Der.','hR'],
+           ['💪 Codo Izq.','eL'],   ['💪 Codo Der.','eR'],
+           ['🧍 Tronco','tr'],      ['⚖️ Simetría','sy']].map(([l,k])=>
+          `<div class="mrow"><div class="mrow-l">${l}</div>
+           <div class="mrow-v">${avg(k)}${k==='sy'?'%':'°'}</div></div>`).join('')}
+      </div>
+    </div>
+    <div class="tip">💡 <strong>Recomendaciones:</strong> ${genRecs(s)}</div>`;
+
+  openModal('mResults');
+  setTimeout(() => {
+    const step = Math.max(1, Math.floor(s.data.length/25));
+    const pts  = s.data.filter((_,i)=>i%step===0);
+    new Chart(document.getElementById('rChart').getContext('2d'), {
+      type:'line',
+      data:{ labels:pts.map(d=>Math.round(d.t/1000)+'s'),
+        datasets:[{data:pts.map(d=>d.q),borderColor:'#22d3ee',
+          backgroundColor:'rgba(34,211,238,0.08)',fill:true,tension:.4,pointRadius:0,borderWidth:2}] },
+      options:{ plugins:{legend:{display:false}}, scales:{
+        y:{min:0,max:100,ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,0.04)'}},
+        x:{ticks:{color:'#64748b'},grid:{display:false}} } }
+    });
+  }, 80);
+}
+
+function genRecs(s) {
+  const r = [];
+  if (s.avgS < 75) r.push('Trabaja la simetría entre lado izquierdo y derecho.');
+  if (s.avgQ < 60) r.push('Enfócate en mejorar la técnica básica del movimiento.');
+  if (s.avgQ >= 80) r.push('Excelente sesión, mantén esta consistencia.');
+  const tr = Math.round(s.data.reduce((a,d)=>a+(d.tr||0),0)/s.data.length);
+  if (tr > 20 && s.sport === 'running') r.push('Reduce la inclinación del tronco en carrera.');
+  if (!r.length) r.push('Buen trabajo, sigue practicando para mejorar progresivamente.');
+  return r.join(' ');
+}
+
+/* ═══ REPORTS ═══ */
+function renderReports() {
+  const all = getSessions();
+  const el  = document.getElementById('reportsBody');
+  if (!all.length) {
+    el.innerHTML = `<div class="empty"><span class="empty-i">📋</span>
+      <div class="empty-t">Sin datos suficientes</div>
+      <div class="empty-d">Completa al menos una sesión para ver los informes</div></div>`;
+    return;
+  }
+  const avgQ = Math.round(all.reduce((a,s)=>a+s.avgQ,0)/all.length);
+  const avgS = Math.round(all.reduce((a,s)=>a+s.avgS,0)/all.length);
+  const bestQ = Math.max(...all.map(s=>s.avgQ));
+  const spB = {};
+  all.forEach(s => { spB[s.sport] = (spB[s.sport]||0)+1; });
+
+  el.innerHTML = `
+    <div class="rep-hdr mb16">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--cyan);font-weight:600;margin-bottom:8px">Informe de Rendimiento</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px">${all.length} sesiones analizadas</div>
+      <div style="color:var(--t2);font-size:13px">Generado el ${new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}</div>
+    </div>
+    <div class="g4 mb16">
+      <div class="scard"><span class="scard-ico">📊</span><div class="scard-lbl">Sesiones</div><div class="scard-val">${all.length}</div></div>
+      <div class="scard"><span class="scard-ico">⚡</span><div class="scard-lbl">Calidad Media</div><div class="scard-val cyan">${avgQ}</div></div>
+      <div class="scard"><span class="scard-ico">⚖️</span><div class="scard-lbl">Simetría Media</div><div class="scard-val emerald">${avgS}%</div></div>
+      <div class="scard"><span class="scard-ico">🏆</span><div class="scard-lbl">Mejor Score</div><div class="scard-val gold">${bestQ}</div></div>
+    </div>
+    <div class="g2 mb16">
+      <div class="card"><div class="card-t">Progresión de Calidad</div><div class="ch ch-200"><canvas id="repProg"></canvas></div></div>
+      <div class="card"><div class="card-t">Sesiones por Deporte</div><div class="ch ch-200"><canvas id="repSport"></canvas></div></div>
+    </div>
+    <div class="card">
+      <div class="card-t">Resumen de Sesiones</div>
+      ${all.map(s => {
+        const sp = SPORTS[s.sport]||SPORTS.general;
+        const ql = qlabel(s.avgQ);
+        const bc = s.avgQ>=70?'b-ok':s.avgQ>=55?'b-wn':'b-bd';
+        return `<div class="mrow">
+          <div style="display:flex;align-items:center;gap:12px">
+            <span style="font-size:18px">${sp.icon}</span>
+            <div><div style="font-size:13px;font-weight:600">${s.name}</div>
+            <div style="font-size:11px;color:var(--t2)">${new Date(s.date).toLocaleDateString('es-ES')}</div></div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span class="badge ${bc}">${ql.txt}</span>
+            <span style="font-size:20px;font-weight:900;color:${ql.clr}">${s.avgQ}</span>
+          </div></div>`;
+      }).join('')}
+    </div>`;
+
+  setTimeout(() => {
+    const rec = all.slice(0,12).reverse();
+    new Chart(document.getElementById('repProg').getContext('2d'), {
+      type:'line',
+      data:{ labels:rec.map(s=>new Date(s.date).toLocaleDateString('es-ES',{day:'2-digit',month:'2-digit'})),
+        datasets:[{data:rec.map(s=>s.avgQ),borderColor:'#22d3ee',backgroundColor:'rgba(34,211,238,0.08)',fill:true,tension:.4}] },
+      options:{ plugins:{legend:{display:false}}, scales:{
+        y:{min:0,max:100,ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,0.04)'}},
+        x:{ticks:{color:'#64748b'},grid:{display:false}} } }
+    });
+    new Chart(document.getElementById('repSport').getContext('2d'), {
+      type:'doughnut',
+      data:{ labels:Object.keys(spB).map(k=>(SPORTS[k]||SPORTS.general).name),
+        datasets:[{data:Object.values(spB),backgroundColor:['#22d3ee','#818cf8','#34d399','#fbbf24'],borderWidth:0,borderRadius:4}] },
+      options:{ plugins:{ legend:{position:'bottom',labels:{color:'#64748b',font:{size:11},padding:14}} },
+        cutout:'65%' }
+    });
+  }, 80);
+}
+
+/* ═══ PDF ═══ */
+function genPDF() {
+  const s = S.curSession;
+  if (!s) { toast('Sin sesión activa','err'); return; }
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF('p','mm','a4');
+  const sp  = SPORTS[s.sport]||SPORTS.general;
+  const ql  = qlabel(s.avgQ);
+  const avg = k => Math.round(s.data.reduce((a,d)=>a+(d[k]||0),0)/s.data.length);
+
+  // Header
+  doc.setFillColor(5,6,15);
+  doc.rect(0,0,210,45,'F');
+  doc.setFillColor(34,211,238);
+  doc.rect(0,0,4,297,'F');
+  doc.setTextColor(255,255,255);
+  doc.setFontSize(22); doc.setFont('helvetica','bold');
+  doc.text('SportAnalyzer Pro', 14, 18);
+  doc.setFontSize(11); doc.setFont('helvetica','normal');
+  doc.setTextColor(148,163,184);
+  doc.text('Informe de Sesión  ·  ' + new Date(s.date).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'}), 14, 28);
+  doc.text(sp.name + '  ·  ' + s.name, 14, 36);
+
+  // KPI boxes
+  const boxes = [
+    [s.avgQ, ql.txt.toUpperCase(), 'Calidad Media'],
+    [s.avgS+'%', '', 'Simetría Media'],
+    [Math.floor(s.dur/60)+'m '+s.dur%60+'s','','Duración'],
+    [s.frames,'frames','Muestras']
+  ];
+  boxes.forEach(([val,sub,lbl],i) => {
+    const x = 10 + i*50;
+    doc.setFillColor(17,24,39); doc.roundedRect(x,50,46,30,3,3,'F');
+    doc.setTextColor(100,116,139); doc.setFontSize(8.5); doc.setFont('helvetica','normal');
+    doc.text(lbl, x+23,58,{align:'center'});
+    doc.setTextColor(34,211,238); doc.setFontSize(17); doc.setFont('helvetica','bold');
+    doc.text(String(val), x+23,69,{align:'center'});
+    if(sub){ doc.setFontSize(8); doc.setTextColor(100,116,139); doc.text(sub,x+23,74,{align:'center'}); }
+  });
+
+  // Angles
+  doc.setTextColor(30,40,60); doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.setTextColor(248,250,252);
+  doc.text('Análisis de Ángulos', 14, 94);
+  const rows = [
+    ['Rodilla Izquierda',avg('kL')+'°','Rodilla Derecha',avg('kR')+'°'],
+    ['Cadera Izquierda', avg('hL')+'°','Cadera Derecha',  avg('hR')+'°'],
+    ['Codo Izquierdo',   avg('eL')+'°','Codo Derecho',    avg('eR')+'°'],
+    ['Inclinación Tronco',avg('tr')+'°','Simetría Media',  avg('sy')+'%'],
+  ];
+  let y = 102;
+  rows.forEach(([l1,v1,l2,v2],i) => {
+    doc.setFillColor(i%2?13:17, i%2?18:24, i%2?28:39);
+    doc.rect(10,y-4,190,11,'F');
+    doc.setTextColor(148,163,184); doc.setFontSize(9.5); doc.setFont('helvetica','normal');
+    doc.text(l1,14,y+3); doc.setTextColor(34,211,238); doc.text(v1,82,y+3);
+    doc.setTextColor(148,163,184); doc.text(l2,112,y+3); doc.setTextColor(34,211,238); doc.text(v2,177,y+3);
+    y+=13;
+  });
+
+  // Recs
+  y+=8;
+  doc.setTextColor(248,250,252); doc.setFontSize(13); doc.setFont('helvetica','bold');
+  doc.text('Recomendaciones', 14, y); y+=8;
+  doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(148,163,184);
+  doc.splitTextToSize('• '+genRecs(s),182).forEach(l=>{doc.text(l,14,y);y+=6;});
+
+  doc.setFontSize(8); doc.setTextColor(71,85,105);
+  doc.text('SportAnalyzer Pro  ·  '+new Date().toLocaleString('es-ES'),105,287,{align:'center'});
+
+  doc.save(`SportAnalyzer_${s.sport}_${s.id}.pdf`);
+  toast('PDF exportado ✓', 'ok');
+}
+
+function exportSummaryPDF() {
+  const all = getSessions();
+  if (!all.length) { toast('Sin sesiones para exportar','err'); return; }
+  S.curSession = all[0]; genPDF();
+}
+
+/* ═══ CHARTS ═══ */
+function initCharts() {
+  Chart.defaults.color = '#64748b';
+  Chart.defaults.borderColor = 'rgba(255,255,255,0.04)';
+
+  S.homeChartInst = new Chart(document.getElementById('homeChart').getContext('2d'), {
+    type:'line',
+    data:{ labels:[], datasets:[{label:'Calidad',data:[],borderColor:'#22d3ee',
+      backgroundColor:'rgba(34,211,238,0.06)',fill:true,tension:.4,pointRadius:3,
+      pointBackgroundColor:'#22d3ee',pointBorderColor:'transparent'}] },
+    options:{ plugins:{legend:{display:false}}, scales:{
+      y:{min:0,max:100,ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,0.04)'}},
+      x:{ticks:{color:'#64748b'},grid:{display:false}} } }
+  });
+
+  S.liveChart = new Chart(document.getElementById('liveChart').getContext('2d'), {
+    type:'line',
+    data:{ labels:Array(80).fill(''), datasets:[{data:[...S.liveBuf],borderColor:'#22d3ee',
+      backgroundColor:'rgba(34,211,238,0.08)',fill:true,tension:.4,pointRadius:0,borderWidth:2}] },
+    options:{ animation:false, plugins:{legend:{display:false}}, scales:{
+      y:{min:0,max:100,ticks:{color:'#64748b'},grid:{color:'rgba(255,255,255,0.04)'}},
+      x:{display:false} } }
+  });
+}
+
+/* ═══ MODALS ═══ */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.getElementById('mSports').addEventListener('click', e => {
+  const opt = e.target.closest('.sport-opt');
+  if (!opt) return;
+  document.querySelectorAll('#mSports .sport-opt').forEach(o=>o.classList.remove('sel'));
+  opt.classList.add('sel');
+  S.sport = opt.dataset.s;
+});
+
+function startSession() { closeModal('mStart'); showView('tracking'); }
+function quickStart(sp) {
+  S.sport = sp;
+  document.querySelectorAll('#mSports .sport-opt').forEach(o=>o.classList.toggle('sel',o.dataset.s===sp));
+  showView('tracking');
+}
+
+/* ═══ TOAST ═══ */
+function toast(msg, type='') {
+  const c = document.getElementById('toasts');
+  const el = Object.assign(document.createElement('div'),{className:'toast '+(type||''),textContent:msg});
+  c.appendChild(el); setTimeout(()=>el.remove(), 3400);
+}
+
+/* ═══ BOOT ═══ */
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
