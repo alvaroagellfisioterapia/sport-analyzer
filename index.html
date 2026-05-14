@@ -795,6 +795,91 @@
   .t2 { color: var(--t2); }
   .fw9 { font-weight: 900; }
   .text-center { text-align: center; }
+
+  /* ═══ VIDEO ANALYSIS ═══ */
+  .upload-zone {
+    border: 2px dashed rgba(34,211,238,0.25);
+    border-radius: var(--r3);
+    padding: 60px 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: rgba(34,211,238,0.03);
+  }
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--cyan);
+    background: rgba(34,211,238,0.08);
+    transform: translateY(-2px);
+  }
+  .upload-zone-ico { font-size: 48px; margin-bottom: 16px; display: block; opacity: 0.6; }
+  .upload-zone-txt { font-size: 16px; font-weight: 600; color: var(--t1); margin-bottom: 8px; }
+  .upload-zone-sub { font-size: 13px; color: var(--t3); }
+
+  .video-preview-wrap {
+    position: relative;
+    border-radius: var(--r3);
+    overflow: hidden;
+    background: #000;
+    margin-bottom: 16px;
+  }
+  .video-preview-wrap video {
+    width: 100%;
+    max-height: 400px;
+    display: block;
+  }
+  .video-preview-wrap canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    pointer-events: none;
+  }
+
+  .video-info {
+    display: flex; gap: 16px; align-items: center;
+    padding: 12px 16px;
+    background: var(--s2);
+    border-radius: var(--r);
+    margin-bottom: 16px;
+    font-size: 13px; color: var(--t2);
+    flex-wrap: wrap;
+  }
+
+  .analyze-progress {
+    background: var(--surface);
+    border: 1px solid var(--b);
+    border-radius: var(--r3);
+    padding: 24px;
+    text-align: center;
+  }
+  .analyze-progress-bar {
+    height: 8px;
+    background: rgba(255,255,255,0.06);
+    border-radius: 4px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .analyze-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--cyan2), var(--purple));
+    border-radius: 4px;
+    transition: width 0.15s;
+  }
+  .analyze-progress-pct {
+    font-size: 36px; font-weight: 900;
+    background: linear-gradient(135deg, var(--cyan), var(--purple));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .analyze-progress-msg {
+    font-size: 13px; color: var(--t2); margin-top: 8px;
+  }
+
+  .video-results { animation: fadeUp 0.3s ease; }
+
+  @media (max-width: 768px) {
+    .upload-zone { padding: 40px 20px; }
+    .upload-zone-ico { font-size: 36px; }
+    .video-preview-wrap video { max-height: 260px; }
+  }
   </style>
 </head>
 <body>
@@ -913,6 +998,9 @@
       </div>
       <div class="nav-item" onclick="showView('tracking')">
         <span class="nav-icon">📷</span> Análisis en Vivo
+      </div>
+      <div class="nav-item" onclick="showView('video')">
+        <span class="nav-icon">📹</span> Analizar Vídeo
       </div>
 
       <span class="nav-label">Resultados</span>
@@ -1153,6 +1241,74 @@
       <div id="reportsBody"></div>
     </div>
 
+    <!-- ░░ VIDEO ANALYSIS ░░ -->
+    <div class="view" id="view-video">
+      <div class="ph">
+        <div>
+          <div class="ph-eyebrow">Análisis Offline</div>
+          <div class="ph-title">Análisis de Vídeo</div>
+          <div class="ph-sub">Sube un vídeo grabado para analizar el movimiento</div>
+        </div>
+      </div>
+
+      <!-- Athlete indicator (if selected) -->
+      <div id="videoAthleteIndicator" style="display:none" class="mb16"></div>
+
+      <!-- Upload Zone -->
+      <div id="videoUploadZone" class="upload-zone mb16" onclick="document.getElementById('videoFileInput').click()">
+        <span class="upload-zone-ico">📹</span>
+        <div class="upload-zone-txt">Arrastra un vídeo o haz clic para seleccionar</div>
+        <div class="upload-zone-sub">Formatos: MP4, MOV, WebM · Máx 500MB</div>
+        <input type="file" id="videoFileInput" accept="video/*" style="display:none" onchange="handleVideoFile(this.files[0])">
+      </div>
+
+      <!-- Video Preview (hidden until file loaded) -->
+      <div id="videoPreviewSection" style="display:none">
+        <div class="video-preview-wrap">
+          <video id="videoPreview" controls playsinline></video>
+          <canvas id="videoOverlayCanvas"></canvas>
+        </div>
+        <div class="video-info" id="videoInfoBar">
+          <span id="videoFileName">—</span>
+          <span id="videoDuration">—</span>
+          <span id="videoFileSize">—</span>
+        </div>
+
+        <!-- Sport selector -->
+        <div class="card mb16">
+          <div class="card-t">Deporte para el análisis</div>
+          <div class="sport-grid" id="videoSportGrid">
+            <div class="sport-opt sel" data-s="running"><span class="sport-ico">🏃</span><div class="sport-lbl">Running</div></div>
+            <div class="sport-opt" data-s="racket"><span class="sport-ico">🎾</span><div class="sport-lbl">Raqueta</div></div>
+            <div class="sport-opt" data-s="gym"><span class="sport-ico">🏋️</span><div class="sport-lbl">Gym</div></div>
+            <div class="sport-opt" data-s="general"><span class="sport-ico">⚡</span><div class="sport-lbl">General</div></div>
+          </div>
+        </div>
+
+        <!-- Analyze button -->
+        <button class="btn btn-p btn-lg" style="width:100%" id="videoAnalyzeBtn" onclick="analyzeVideo()">🔬&nbsp; Analizar Movimiento</button>
+      </div>
+
+      <!-- Progress (hidden until analyzing) -->
+      <div id="videoProgressSection" style="display:none" class="analyze-progress mb16">
+        <div class="analyze-progress-pct" id="videoProgressPct">0%</div>
+        <div class="analyze-progress-bar"><div class="analyze-progress-fill" id="videoProgressFill" style="width:0%"></div></div>
+        <div class="analyze-progress-msg" id="videoProgressMsg">Preparando análisis...</div>
+        <button class="btn btn-danger" style="margin-top:16px" onclick="cancelVideoAnalysis()">Cancelar</button>
+      </div>
+
+      <!-- Results (hidden until analysis complete) -->
+      <div id="videoResultsSection" style="display:none" class="video-results">
+        <div id="videoResultsBody"></div>
+        <div style="display:flex;gap:10px;margin-top:20px;flex-wrap:wrap">
+          <button class="btn btn-outline" onclick="genPDF()" style="flex:1;min-width:110px">📄&nbsp; Exportar PDF</button>
+          <button class="btn btn-p" onclick="saveVideoSession()" id="videoSaveBtn" style="flex:1;min-width:110px">💾&nbsp; Guardar Sesión</button>
+          <button class="btn btn-ghost" onclick="resetVideoView()" style="flex:1;min-width:110px">🔄&nbsp; Analizar otro vídeo</button>
+        </div>
+      </div>
+
+    </div>
+
   </main>
 </div>
 
@@ -1163,7 +1319,7 @@
     <div class="bnav-item" onclick="showView('athletes')"><span class="bnav-ico">👥</span>Deportistas</div>
     <div class="bnav-item" onclick="showView('tracking')"><span class="bnav-ico">📷</span>Análisis</div>
     <div class="bnav-item" onclick="showView('history')"><span class="bnav-ico">📊</span>Historial</div>
-    <div class="bnav-item" onclick="showView('reports')"><span class="bnav-ico">📋</span>Informes</div>
+    <div class="bnav-item" onclick="showView('video')"><span class="bnav-ico">📹</span>Vídeo</div>
   </div>
 </nav>
 
@@ -1182,6 +1338,12 @@ const S = {
   noPersonFrames: 0,
   curAthlete: null,       // Currently selected athlete
   editingAthleteId: null, // When editing an athlete
+  videoLandmarker: null,  // Separate landmarker for video (IMAGE mode)
+  videoAnalyzing: false,
+  videoFile: null,
+  videoFrameData: [],
+  videoSession: null,
+  videoSport: 'running',
 };
 
 const P = {
@@ -1357,7 +1519,7 @@ function renderAthleteDetail(id) {
       <div class="ath-header-actions">
         <button class="btn btn-p" onclick="startSessionForAthlete(${a.id})">▶&nbsp; Nueva Sesión</button>
         <button class="btn btn-ghost" onclick="openEditAthleteModal(${a.id})">✏️&nbsp; Editar</button>
-        <button class="btn btn-outline" onclick="toast('Análisis de vídeo próximamente','')">🎥&nbsp; Analizar Vídeo</button>
+        <button class="btn btn-outline" onclick="startVideoForAthlete(${a.id})">🎥&nbsp; Analizar Vídeo</button>
         <button class="btn btn-danger" onclick="deleteAthlete(${a.id})">🗑️</button>
       </div>
     </div>
@@ -1546,6 +1708,7 @@ function showView(id) {
   else if (id === 'reports')    renderReports();
   else if (id === 'home')       refreshHome();
   else if (id === 'athletes')   renderAthletes();
+  else if (id === 'video')      initVideoView();
   else if (id === 'athlete-detail') {
     if (S.curAthlete) renderAthleteDetail(S.curAthlete.id);
     else showView('athletes');
@@ -2256,6 +2419,383 @@ function toast(msg, type='') {
   const c = document.getElementById('toasts');
   const el = Object.assign(document.createElement('div'),{className:'toast '+(type||''),textContent:msg});
   c.appendChild(el); setTimeout(()=>el.remove(), 3400);
+}
+
+/* ═══════════════════════════════════════════════════
+   VIDEO ANALYSIS
+   ═══════════════════════════════════════════════════ */
+
+// Sport grid handler for video view
+document.getElementById('videoSportGrid').addEventListener('click', e => {
+  const opt = e.target.closest('.sport-opt');
+  if (!opt) return;
+  document.querySelectorAll('#videoSportGrid .sport-opt').forEach(o => o.classList.remove('sel'));
+  opt.classList.add('sel');
+  S.videoSport = opt.dataset.s;
+});
+
+// Upload zone drag & drop
+const uploadZone = document.getElementById('videoUploadZone');
+uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.classList.add('drag-over'); });
+uploadZone.addEventListener('dragleave', e => { e.preventDefault(); uploadZone.classList.remove('drag-over'); });
+uploadZone.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag-over');
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith('video/')) handleVideoFile(file);
+  else toast('Por favor selecciona un archivo de vídeo', 'err');
+});
+
+function initVideoView() {
+  // Show athlete indicator if athlete is selected
+  const indicator = document.getElementById('videoAthleteIndicator');
+  if (S.curAthlete) {
+    const sp = SPORTS[S.curAthlete.sport] || SPORTS.general;
+    const initials = getAthleteInitials(S.curAthlete.name);
+    indicator.style.display = '';
+    indicator.innerHTML = `<div class="ath-session-indicator">
+      <div class="ath-avatar ${S.curAthlete.sport}">${initials}</div>
+      <div>
+        <div class="ath-session-indicator-name">${S.curAthlete.name}</div>
+        <div class="ath-session-indicator-sub">Análisis de vídeo · ${sp.icon} ${sp.name}</div>
+      </div>
+    </div>`;
+    // Auto-select athlete's sport
+    S.videoSport = S.curAthlete.sport;
+    document.querySelectorAll('#videoSportGrid .sport-opt').forEach(o =>
+      o.classList.toggle('sel', o.dataset.s === S.curAthlete.sport));
+  } else {
+    indicator.style.display = 'none';
+  }
+}
+
+function startVideoForAthlete(id) {
+  const a = getAthletes().find(x => x.id === id);
+  if (!a) return;
+  S.curAthlete = a;
+  showView('video');
+}
+
+function handleVideoFile(file) {
+  if (!file) return;
+  if (file.size > 500 * 1024 * 1024) {
+    toast('El archivo excede el límite de 500MB', 'err');
+    return;
+  }
+  if (!file.type.startsWith('video/')) {
+    toast('Formato no soportado. Usa MP4, MOV o WebM', 'err');
+    return;
+  }
+
+  S.videoFile = file;
+  S.videoFrameData = [];
+  S.videoSession = null;
+
+  // Show preview section, hide results
+  document.getElementById('videoUploadZone').style.display = 'none';
+  document.getElementById('videoPreviewSection').style.display = '';
+  document.getElementById('videoProgressSection').style.display = 'none';
+  document.getElementById('videoResultsSection').style.display = 'none';
+  document.getElementById('videoAnalyzeBtn').disabled = false;
+  document.getElementById('videoAnalyzeBtn').innerHTML = '🔬&nbsp; Analizar Movimiento';
+
+  // Load video
+  const vid = document.getElementById('videoPreview');
+  const url = URL.createObjectURL(file);
+  vid.src = url;
+
+  vid.onloadedmetadata = () => {
+    const durMin = Math.floor(vid.duration / 60);
+    const durSec = Math.round(vid.duration % 60);
+    document.getElementById('videoFileName').textContent = '📄 ' + file.name;
+    document.getElementById('videoDuration').textContent = '⏱️ ' + durMin + ':' + String(durSec).padStart(2, '0');
+    document.getElementById('videoFileSize').textContent = '💾 ' + (file.size / (1024 * 1024)).toFixed(1) + ' MB';
+  };
+
+  // Clear overlay canvas
+  const canvas = document.getElementById('videoOverlayCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+function resetVideoView() {
+  S.videoFile = null;
+  S.videoFrameData = [];
+  S.videoSession = null;
+  S.videoAnalyzing = false;
+
+  document.getElementById('videoUploadZone').style.display = '';
+  document.getElementById('videoPreviewSection').style.display = 'none';
+  document.getElementById('videoProgressSection').style.display = 'none';
+  document.getElementById('videoResultsSection').style.display = 'none';
+
+  // Reset file input
+  document.getElementById('videoFileInput').value = '';
+
+  // Revoke old object URL
+  const vid = document.getElementById('videoPreview');
+  if (vid.src) { URL.revokeObjectURL(vid.src); vid.removeAttribute('src'); vid.load(); }
+}
+
+// Lazy init for video analysis landmarker (IMAGE mode)
+async function getVideoLandmarker() {
+  if (S.videoLandmarker) return S.videoLandmarker;
+  const wasm = await FilesetResolver.forVisionTasks(
+    'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm'
+  );
+  S.videoLandmarker = await PoseLandmarker.createFromOptions(wasm, {
+    baseOptions: {
+      modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task',
+      delegate: 'GPU'
+    },
+    runningMode: 'IMAGE',
+    numPoses: 1,
+  });
+  return S.videoLandmarker;
+}
+
+async function analyzeVideo() {
+  const vid = document.getElementById('videoPreview');
+  if (!vid.duration || vid.duration < 0.5) {
+    toast('Vídeo demasiado corto o no cargado', 'err');
+    return;
+  }
+
+  // Disable button, show progress
+  document.getElementById('videoAnalyzeBtn').disabled = true;
+  document.getElementById('videoAnalyzeBtn').innerHTML = '⏳&nbsp; Preparando...';
+  document.getElementById('videoProgressSection').style.display = '';
+  document.getElementById('videoResultsSection').style.display = 'none';
+
+  S.videoAnalyzing = true;
+  S.videoFrameData = [];
+
+  try {
+    // Get or create the IMAGE mode landmarker
+    const landmarker = await getVideoLandmarker();
+
+    // Create offscreen canvas same size as video
+    const offCanvas = document.createElement('canvas');
+    offCanvas.width = vid.videoWidth;
+    offCanvas.height = vid.videoHeight;
+    const offCtx = offCanvas.getContext('2d');
+
+    // Setup overlay canvas
+    const overlayCanvas = document.getElementById('videoOverlayCanvas');
+    overlayCanvas.width = vid.videoWidth;
+    overlayCanvas.height = vid.videoHeight;
+    const overlayCtx = overlayCanvas.getContext('2d');
+
+    // Pause video for seeking
+    vid.pause();
+
+    // Calculate frames: analyze at 10fps (every 100ms)
+    const step = 0.1; // 100ms
+    const totalFrames = Math.floor(vid.duration / step);
+    const startTime = Date.now();
+    let framesWithPerson = 0;
+
+    for (let i = 0; i < totalFrames; i++) {
+      if (!S.videoAnalyzing) {
+        toast('Análisis cancelado', '');
+        document.getElementById('videoProgressSection').style.display = 'none';
+        document.getElementById('videoAnalyzeBtn').disabled = false;
+        document.getElementById('videoAnalyzeBtn').innerHTML = '🔬&nbsp; Analizar Movimiento';
+        return;
+      }
+
+      const t = i * step;
+
+      // Seek video to time
+      await new Promise(r => { vid.onseeked = r; vid.currentTime = t; });
+
+      // Draw frame to offscreen canvas
+      offCtx.drawImage(vid, 0, 0, offCanvas.width, offCanvas.height);
+
+      // Run pose detection
+      let res;
+      try { res = landmarker.detect(offCanvas); } catch(e) { continue; }
+
+      if (res && res.landmarks && res.landmarks.length > 0) {
+        const lm = res.landmarks[0];
+        const f = calcFrame(lm);
+        const q = qualityScore(f, S.videoSport);
+        S.videoFrameData.push({
+          t: Math.round(t * 1000),
+          q,
+          kL: Math.round(f.kL), kR: Math.round(f.kR),
+          hL: Math.round(f.hL), hR: Math.round(f.hR),
+          eL: Math.round(f.eL), eR: Math.round(f.eR),
+          tr: Math.round(f.trunk), sy: Math.round(f.sym)
+        });
+        framesWithPerson++;
+
+        // Draw skeleton on overlay (show last detected pose)
+        overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+        drawPose(overlayCtx, lm, overlayCanvas.width, overlayCanvas.height);
+      }
+
+      // Update progress
+      const pct = Math.round(((i + 1) / totalFrames) * 100);
+      document.getElementById('videoProgressPct').textContent = pct + '%';
+      document.getElementById('videoProgressFill').style.width = pct + '%';
+
+      const elapsed = (Date.now() - startTime) / 1000;
+      const rate = (i + 1) / elapsed;
+      const remaining = Math.max(0, Math.round((totalFrames - i - 1) / rate));
+      const remMin = Math.floor(remaining / 60);
+      const remSec = remaining % 60;
+      document.getElementById('videoProgressMsg').textContent =
+        `Analizando frame ${i + 1} de ${totalFrames}… Quedan ~${remMin > 0 ? remMin + 'm ' : ''}${remSec}s`;
+
+      // Yield to UI every frame
+      await new Promise(r => setTimeout(r, 0));
+    }
+
+    S.videoAnalyzing = false;
+
+    // Check minimum frames
+    if (S.videoFrameData.length < 5) {
+      toast('No se detectó suficiente movimiento en el vídeo', 'err');
+      document.getElementById('videoProgressSection').style.display = 'none';
+      document.getElementById('videoAnalyzeBtn').disabled = false;
+      document.getElementById('videoAnalyzeBtn').innerHTML = '🔬&nbsp; Analizar Movimiento';
+      return;
+    }
+
+    // Build session object
+    const d = S.videoFrameData;
+    const dur = d.length ? Math.round(d[d.length - 1].t / 1000) : 0;
+    const avgQ = Math.round(d.reduce((a, x) => a + x.q, 0) / d.length);
+    const avgS = Math.round(d.reduce((a, x) => a + x.sy, 0) / d.length);
+    const maxQ = Math.max(...d.map(x => x.q));
+    const fileName = S.videoFile ? S.videoFile.name.replace(/\.[^.]+$/, '') : 'Vídeo';
+    const name = fileName + ' · ' + SPORTS[S.videoSport].name;
+
+    S.videoSession = {
+      id: Date.now(),
+      date: new Date().toISOString(),
+      sport: S.videoSport,
+      name,
+      dur,
+      avgQ,
+      avgS,
+      maxQ,
+      frames: d.length,
+      data: d,
+      athleteId: S.curAthlete ? S.curAthlete.id : null,
+      source: 'video'
+    };
+    S.curSession = S.videoSession;
+
+    // Show results
+    document.getElementById('videoProgressSection').style.display = 'none';
+    showVideoResults(S.videoSession);
+
+  } catch (e) {
+    console.error('Video analysis error:', e);
+    toast('Error al analizar el vídeo: ' + (e.message || 'Error desconocido'), 'err');
+    document.getElementById('videoProgressSection').style.display = 'none';
+    document.getElementById('videoAnalyzeBtn').disabled = false;
+    document.getElementById('videoAnalyzeBtn').innerHTML = '🔬&nbsp; Analizar Movimiento';
+    S.videoAnalyzing = false;
+  }
+}
+
+function cancelVideoAnalysis() {
+  S.videoAnalyzing = false;
+}
+
+function showVideoResults(s) {
+  const sp = SPORTS[s.sport] || SPORTS.general;
+  const ql = qlabel(s.avgQ);
+  const avg = k => Math.round(s.data.reduce((a, d) => a + (d[k] || 0), 0) / s.data.length);
+
+  document.getElementById('videoResultsSection').style.display = '';
+
+  document.getElementById('videoResultsBody').innerHTML = `
+    <div class="rep-hdr mb16" style="text-align:center">
+      <div style="font-size:36px;margin-bottom:8px">${sp.icon}</div>
+      <div style="font-size:22px;font-weight:900;letter-spacing:-0.5px;margin-bottom:4px">Análisis Completado</div>
+      <div style="color:var(--t2);font-size:13px">${s.name} · ${s.frames} frames analizados</div>
+    </div>
+
+    <div class="g3 mb16">
+      <div class="scard text-center">
+        <span class="scard-ico">⚡</span>
+        <div class="scard-lbl">Calidad Media</div>
+        <div class="scard-val" style="color:${ql.clr}">${s.avgQ}</div>
+        <div class="scard-unit">${ql.txt}</div>
+      </div>
+      <div class="scard text-center">
+        <span class="scard-ico">⚖️</span>
+        <div class="scard-lbl">Simetría</div>
+        <div class="scard-val emerald">${s.avgS}%</div>
+      </div>
+      <div class="scard text-center">
+        <span class="scard-ico">⏱️</span>
+        <div class="scard-lbl">Duración</div>
+        <div class="scard-val">${Math.floor(s.dur / 60)}:${String(s.dur % 60).padStart(2, '0')}</div>
+      </div>
+    </div>
+
+    <div class="card mb16">
+      <div class="card-t">Calidad durante el vídeo</div>
+      <div class="ch ch-200"><canvas id="videoResultChart"></canvas></div>
+    </div>
+
+    <div class="card mb16">
+      <div class="card-t">Promedio de Ángulos</div>
+      <div class="g2">
+        ${[['🦵 Rodilla Izq.', 'kL'], ['🦵 Rodilla Der.', 'kR'],
+           ['🏃 Cadera Izq.', 'hL'], ['🏃 Cadera Der.', 'hR'],
+           ['💪 Codo Izq.', 'eL'], ['💪 Codo Der.', 'eR'],
+           ['🧍 Tronco', 'tr'], ['⚖️ Simetría', 'sy']].map(([l, k]) =>
+          `<div class="mrow"><div class="mrow-l">${l}</div>
+           <div class="mrow-v">${avg(k)}${k === 'sy' ? '%' : '°'}</div></div>`).join('')}
+      </div>
+    </div>
+
+    <div class="tip mb16">💡 <strong>Recomendaciones:</strong> ${genRecs(s)}</div>`;
+
+  // Render chart
+  setTimeout(() => {
+    const chartEl = document.getElementById('videoResultChart');
+    if (!chartEl) return;
+    const step = Math.max(1, Math.floor(s.data.length / 30));
+    const pts = s.data.filter((_, i) => i % step === 0);
+    new Chart(chartEl.getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: pts.map(d => Math.round(d.t / 1000) + 's'),
+        datasets: [{
+          data: pts.map(d => d.q),
+          borderColor: '#22d3ee',
+          backgroundColor: 'rgba(34,211,238,0.08)',
+          fill: true, tension: .4, pointRadius: 0, borderWidth: 2
+        }]
+      },
+      options: {
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { min: 0, max: 100, ticks: { color: '#64748b' }, grid: { color: 'rgba(255,255,255,0.04)' } },
+          x: { ticks: { color: '#64748b', maxTicksLimit: 10 }, grid: { display: false } }
+        }
+      }
+    });
+  }, 80);
+}
+
+function saveVideoSession() {
+  if (!S.videoSession) return;
+  const all = getSessions();
+  all.unshift(S.videoSession);
+  localStorage.setItem('sa_sessions', JSON.stringify(all));
+  S.curSession = S.videoSession;
+  toast('Sesión de vídeo guardada', 'ok');
+  document.getElementById('videoSaveBtn').disabled = true;
+  document.getElementById('videoSaveBtn').innerHTML = '✓&nbsp; Guardada';
+  refreshHome();
 }
 
 /* ═══ BOOT ═══ */
