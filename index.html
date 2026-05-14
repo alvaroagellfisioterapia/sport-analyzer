@@ -628,9 +628,141 @@
   .bnav-item.active { color: var(--cyan); }
   .bnav-ico { font-size: 20px; }
 
+  /* ═══════════════════════════════════════
+     ATHLETE MANAGEMENT — NEW CSS
+  ═══════════════════════════════════════ */
+
+  /* Athlete grid */
+  .ath-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  /* Athlete card */
+  .athlete-card {
+    background: var(--surface);
+    border: 1px solid var(--b);
+    border-radius: var(--r3);
+    padding: 22px 20px;
+    position: relative; overflow: hidden;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    cursor: pointer;
+  }
+  .athlete-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent);
+  }
+  .athlete-card:hover {
+    border-color: rgba(34,211,238,0.2);
+    transform: translateY(-3px);
+    box-shadow: var(--shadow), var(--glow);
+  }
+  .athlete-card-top {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+  }
+  .athlete-card-info { flex: 1; min-width: 0; }
+  .athlete-card-name {
+    font-size: 15px; font-weight: 700; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+  .athlete-card-sport {
+    font-size: 12px; color: var(--t2); margin-top: 3px;
+    display: flex; align-items: center; gap: 5px;
+  }
+  .athlete-card-stats {
+    display: flex; gap: 16px; padding-top: 14px;
+    border-top: 1px solid var(--b);
+  }
+  .athlete-card-stat {
+    flex: 1; text-align: center;
+  }
+  .athlete-card-stat-val {
+    font-size: 18px; font-weight: 800; line-height: 1;
+  }
+  .athlete-card-stat-lbl {
+    font-size: 10px; color: var(--t3); margin-top: 4px; text-transform: uppercase;
+    letter-spacing: 0.5px; font-weight: 600;
+  }
+
+  /* Avatar */
+  .ath-avatar {
+    width: 48px; height: 48px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; color: #fff;
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .ath-avatar.running  { background: linear-gradient(135deg, var(--cyan2), var(--cyan)); }
+  .ath-avatar.racket   { background: linear-gradient(135deg, var(--emerald), #10b981); }
+  .ath-avatar.gym      { background: linear-gradient(135deg, var(--purple), #6366f1); }
+  .ath-avatar.general  { background: linear-gradient(135deg, var(--gold), #f59e0b); }
+
+  .ath-avatar-lg {
+    width: 64px; height: 64px; font-size: 22px;
+  }
+
+  /* Back button */
+  .back-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 16px; border-radius: var(--r);
+    font-size: 13px; font-weight: 600; color: var(--t2);
+    cursor: pointer; transition: all 0.2s;
+    background: rgba(148,163,184,0.06);
+    border: 1px solid var(--b);
+    margin-bottom: 18px;
+  }
+  .back-btn:hover { background: rgba(148,163,184,0.1); color: var(--t1); border-color: rgba(148,163,184,0.15); }
+
+  /* Athlete detail header */
+  .ath-header {
+    display: flex; align-items: center; gap: 20px;
+    margin-bottom: 24px; flex-wrap: wrap;
+  }
+  .ath-header-info { flex: 1; min-width: 200px; }
+  .ath-header-name { font-size: 26px; font-weight: 800; letter-spacing: -0.5px; }
+  .ath-header-sport { font-size: 14px; color: var(--t2); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+  .ath-header-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+
+  /* Athlete stats row */
+  .ath-stats {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  /* Horizontal scroll row for home */
+  .scroll-row {
+    display: flex; gap: 14px; overflow-x: auto;
+    padding-bottom: 8px; margin-bottom: 4px;
+    scrollbar-width: thin;
+  }
+  .scroll-row::-webkit-scrollbar { height: 3px; }
+  .scroll-row::-webkit-scrollbar-thumb { background: var(--t4); border-radius: 3px; }
+  .scroll-row .athlete-card {
+    min-width: 220px; flex-shrink: 0;
+  }
+
+  /* Session athlete badge */
+  .sess-athlete-badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; color: var(--purple); font-weight: 600;
+  }
+
+  /* Athlete indicator in session start modal */
+  .ath-session-indicator {
+    background: linear-gradient(135deg, rgba(129,140,248,0.1), rgba(34,211,238,0.08));
+    border: 1px solid rgba(129,140,248,0.2);
+    border-radius: var(--r2); padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 18px;
+  }
+  .ath-session-indicator .ath-avatar { width: 36px; height: 36px; font-size: 13px; }
+  .ath-session-indicator-name { font-size: 14px; font-weight: 700; }
+  .ath-session-indicator-sub { font-size: 11px; color: var(--t2); }
+
   /* ═══ RESPONSIVE ═══ */
   @media (max-width: 1100px) {
     .track-layout { grid-template-columns: 1fr 280px; }
+    .ath-grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (max-width: 960px) {
     .track-layout { grid-template-columns: 1fr; height: auto; }
@@ -644,6 +776,8 @@
     .g3 { grid-template-columns: 1fr 1fr; }
     .g2 { grid-template-columns: 1fr; }
     .ph-title { font-size: 22px; }
+    .ath-grid { grid-template-columns: 1fr; }
+    .ath-stats { grid-template-columns: 1fr 1fr; }
   }
   @media (max-width: 420px) {
     .g4 { grid-template-columns: 1fr 1fr; }
@@ -681,6 +815,9 @@
   <div class="modal">
     <div class="modal-t">Nueva Sesión</div>
     <div class="modal-st">Configura tu análisis de movimiento</div>
+
+    <!-- Athlete indicator (shown when starting from athlete detail) -->
+    <div id="mStartAthleteIndicator" style="display:none"></div>
 
     <div class="mb20">
       <div class="field-lbl">Deporte</div>
@@ -722,6 +859,34 @@
   </div>
 </div>
 
+<!-- ═══ MODAL: NUEVO DEPORTISTA ═══ -->
+<div class="overlay" id="mNewAthlete">
+  <div class="modal">
+    <div class="modal-t" id="mAthTitle">Nuevo Deportista</div>
+    <div class="modal-st">Registra un deportista para hacer seguimiento</div>
+
+    <div class="mb20">
+      <div class="field-lbl">Nombre completo</div>
+      <input class="inp" id="athName" type="text" placeholder="Ej: Juan Pérez">
+    </div>
+
+    <div class="mb20">
+      <div class="field-lbl">Deporte principal</div>
+      <div class="sport-grid" id="mAthSports">
+        <div class="sport-opt sel" data-s="running"><span class="sport-ico">🏃</span><div class="sport-lbl">Running</div></div>
+        <div class="sport-opt" data-s="racket"><span class="sport-ico">🎾</span><div class="sport-lbl">Raqueta</div></div>
+        <div class="sport-opt" data-s="gym"><span class="sport-ico">🏋️</span><div class="sport-lbl">Gym</div></div>
+        <div class="sport-opt" data-s="general"><span class="sport-ico">⚡</span><div class="sport-lbl">General</div></div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-ghost" onclick="closeModal('mNewAthlete')" style="flex:1">Cancelar</button>
+      <button class="btn btn-p btn-lg" onclick="submitAthlete()" style="flex:2" id="mAthSubmitBtn">➕&nbsp; Crear Deportista</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ APP ═══ -->
 <div class="layout">
 
@@ -741,6 +906,10 @@
       <span class="nav-label">Principal</span>
       <div class="nav-item active" onclick="showView('home')">
         <span class="nav-icon">🏠</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showView('athletes')">
+        <span class="nav-icon">👥</span> Deportistas
+        <span class="nav-badge" id="athCountBadge" style="display:none">0</span>
       </div>
       <div class="nav-item" onclick="showView('tracking')">
         <span class="nav-icon">📷</span> Análisis en Vivo
@@ -781,7 +950,7 @@
       </div>
 
       <!-- Stats -->
-      <div class="g4 mb16">
+      <div class="g4 mb16" id="homeStatsGrid">
         <div class="scard">
           <span class="scard-ico">📊</span>
           <div class="scard-lbl">Total Sesiones</div>
@@ -803,6 +972,17 @@
           <span class="scard-ico">🏆</span>
           <div class="scard-lbl">Mejor Sesión</div>
           <div class="scard-val emerald" id="sBest">—</div>
+        </div>
+      </div>
+
+      <!-- Athletes row (shown when athletes exist) -->
+      <div id="homeAthletesSection" style="display:none" class="mb16">
+        <div class="card">
+          <div class="card-t" style="display:flex;align-items:center;justify-content:space-between">
+            <span>Deportistas Activos</span>
+            <span style="cursor:pointer;color:var(--cyan);font-size:11px;text-transform:none;letter-spacing:0;font-weight:600" onclick="showView('athletes')">Ver todos →</span>
+          </div>
+          <div class="scroll-row" id="homeAthletesRow"></div>
         </div>
       </div>
 
@@ -828,6 +1008,25 @@
         <div class="card-t">Evolución de Calidad</div>
         <div class="ch ch-200"><canvas id="homeChart"></canvas></div>
       </div>
+    </div>
+
+    <!-- ░░ ATHLETES LIST ░░ -->
+    <div class="view" id="view-athletes">
+      <div class="ph">
+        <div>
+          <div class="ph-eyebrow">Equipo</div>
+          <div class="ph-title">Gestión de Deportistas</div>
+          <div class="ph-sub">Administra y haz seguimiento de tus deportistas</div>
+        </div>
+        <button class="btn btn-p btn-lg" onclick="openNewAthleteModal()">➕&nbsp; Nuevo Deportista</button>
+      </div>
+      <div id="athletesList"></div>
+    </div>
+
+    <!-- ░░ ATHLETE DETAIL ░░ -->
+    <div class="view" id="view-athlete-detail">
+      <div class="back-btn" onclick="showView('athletes')">← Volver a Deportistas</div>
+      <div id="athleteDetailContent"></div>
     </div>
 
     <!-- ░░ TRACKING ░░ -->
@@ -961,6 +1160,7 @@
 <nav class="bnav">
   <div class="bnav-items">
     <div class="bnav-item active" onclick="showView('home')"><span class="bnav-ico">🏠</span>Inicio</div>
+    <div class="bnav-item" onclick="showView('athletes')"><span class="bnav-ico">👥</span>Deportistas</div>
     <div class="bnav-item" onclick="showView('tracking')"><span class="bnav-ico">📷</span>Análisis</div>
     <div class="bnav-item" onclick="showView('history')"><span class="bnav-ico">📊</span>Historial</div>
     <div class="bnav-item" onclick="showView('reports')"><span class="bnav-ico">📋</span>Informes</div>
@@ -980,6 +1180,8 @@ const S = {
   frameData: [], curSession: null, facingMode: 'user',
   liveBuf: Array(80).fill(null), liveChart: null, homeChartInst: null,
   noPersonFrames: 0,
+  curAthlete: null,       // Currently selected athlete
+  editingAthleteId: null, // When editing an athlete
 };
 
 const P = {
@@ -1001,6 +1203,287 @@ const CONN = [
   [23,25],[25,27],[27,29],[27,31],
   [24,26],[26,28],[28,30],[28,32],
 ];
+
+/* ═══════════════════════════════════════════════════
+   ATHLETE MANAGEMENT
+   ═══════════════════════════════════════════════════ */
+
+function getAthletes() {
+  try { return JSON.parse(localStorage.getItem('sa_athletes') || '[]'); } catch { return []; }
+}
+
+function saveAthleteToStorage(athletes) {
+  localStorage.setItem('sa_athletes', JSON.stringify(athletes));
+}
+
+function getAthleteInitials(name) {
+  const parts = name.trim().split(/\s+/);
+  if (parts.length >= 2) return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  return name.substring(0, 2).toUpperCase();
+}
+
+function saveAthlete(data) {
+  const athletes = getAthletes();
+  if (S.editingAthleteId) {
+    const idx = athletes.findIndex(a => a.id === S.editingAthleteId);
+    if (idx !== -1) {
+      athletes[idx].name = data.name;
+      athletes[idx].sport = data.sport;
+    }
+    S.editingAthleteId = null;
+  } else {
+    const athlete = {
+      id: Date.now(),
+      name: data.name,
+      sport: data.sport,
+      avatar: '',
+      createdAt: new Date().toISOString(),
+      sessionsCount: 0
+    };
+    athletes.unshift(athlete);
+  }
+  saveAthleteToStorage(athletes);
+  updateAthBadge();
+}
+
+function deleteAthlete(id) {
+  if (!confirm('¿Eliminar este deportista? Sus sesiones se mantendrán.')) return;
+  const athletes = getAthletes().filter(a => a.id !== id);
+  saveAthleteToStorage(athletes);
+  if (S.curAthlete && S.curAthlete.id === id) S.curAthlete = null;
+  showView('athletes');
+  toast('Deportista eliminado', 'ok');
+}
+
+function selectAthlete(id) {
+  const athletes = getAthletes();
+  S.curAthlete = athletes.find(a => a.id === id) || null;
+  if (S.curAthlete) showView('athlete-detail');
+}
+
+function getAthleteSessions(athleteId) {
+  return getSessions().filter(s => s.athleteId === athleteId);
+}
+
+function getAthleteStats(athleteId) {
+  const sessions = getAthleteSessions(athleteId);
+  const count = sessions.length;
+  if (!count) return { count: 0, avgQ: 0, bestQ: 0, totalTime: 0, lastDate: null };
+  const avgQ = Math.round(sessions.reduce((a, s) => a + s.avgQ, 0) / count);
+  const bestQ = Math.max(...sessions.map(s => s.avgQ));
+  const totalTime = sessions.reduce((a, s) => a + (s.dur || 0), 0);
+  const lastDate = sessions[0].date;
+  return { count, avgQ, bestQ, totalTime, lastDate };
+}
+
+function updateAthBadge() {
+  const athletes = getAthletes();
+  const badge = document.getElementById('athCountBadge');
+  if (athletes.length > 0) {
+    badge.textContent = athletes.length;
+    badge.style.display = '';
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderAthletes() {
+  const athletes = getAthletes();
+  const el = document.getElementById('athletesList');
+  updateAthBadge();
+
+  if (!athletes.length) {
+    el.innerHTML = `<div class="empty">
+      <span class="empty-i">👥</span>
+      <div class="empty-t">Sin deportistas registrados</div>
+      <div class="empty-d">Agrega tu primer deportista para comenzar el seguimiento</div>
+      <button class="btn btn-p" style="margin-top:18px" onclick="openNewAthleteModal()">➕ Agregar Deportista</button>
+    </div>`;
+    return;
+  }
+
+  el.innerHTML = '<div class="ath-grid">' + athletes.map(a => {
+    const sp = SPORTS[a.sport] || SPORTS.general;
+    const stats = getAthleteStats(a.id);
+    const initials = getAthleteInitials(a.name);
+    const lastSess = stats.lastDate
+      ? new Date(stats.lastDate).toLocaleDateString('es-ES', { day: '2-digit', month: 'short' })
+      : 'Sin sesiones';
+    return `<div class="athlete-card" onclick="selectAthlete(${a.id})">
+      <div class="athlete-card-top">
+        <div class="ath-avatar ${a.sport}">${initials}</div>
+        <div class="athlete-card-info">
+          <div class="athlete-card-name">${a.name}</div>
+          <div class="athlete-card-sport">${sp.icon} ${sp.name}</div>
+        </div>
+      </div>
+      <div class="athlete-card-stats">
+        <div class="athlete-card-stat">
+          <div class="athlete-card-stat-val cyan">${stats.count}</div>
+          <div class="athlete-card-stat-lbl">Sesiones</div>
+        </div>
+        <div class="athlete-card-stat">
+          <div class="athlete-card-stat-val ${stats.avgQ >= 70 ? 'emerald' : stats.avgQ >= 55 ? 'gold' : 'rose'}">${stats.count ? stats.avgQ : '—'}</div>
+          <div class="athlete-card-stat-lbl">Calidad</div>
+        </div>
+        <div class="athlete-card-stat">
+          <div class="athlete-card-stat-val t2" style="font-size:13px">${lastSess}</div>
+          <div class="athlete-card-stat-lbl">Última</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function renderAthleteDetail(id) {
+  const athletes = getAthletes();
+  const a = athletes.find(x => x.id === id);
+  if (!a) { showView('athletes'); return; }
+  S.curAthlete = a;
+
+  const sp = SPORTS[a.sport] || SPORTS.general;
+  const stats = getAthleteStats(a.id);
+  const initials = getAthleteInitials(a.name);
+  const sessions = getAthleteSessions(a.id);
+  const el = document.getElementById('athleteDetailContent');
+
+  el.innerHTML = `
+    <div class="ath-header">
+      <div class="ath-avatar ath-avatar-lg ${a.sport}">${initials}</div>
+      <div class="ath-header-info">
+        <div class="ath-header-name">${a.name}</div>
+        <div class="ath-header-sport">${sp.icon} ${sp.name} · Creado ${new Date(a.createdAt).toLocaleDateString('es-ES')}</div>
+      </div>
+      <div class="ath-header-actions">
+        <button class="btn btn-p" onclick="startSessionForAthlete(${a.id})">▶&nbsp; Nueva Sesión</button>
+        <button class="btn btn-ghost" onclick="openEditAthleteModal(${a.id})">✏️&nbsp; Editar</button>
+        <button class="btn btn-outline" onclick="toast('Análisis de vídeo próximamente','')">🎥&nbsp; Analizar Vídeo</button>
+        <button class="btn btn-danger" onclick="deleteAthlete(${a.id})">🗑️</button>
+      </div>
+    </div>
+
+    <div class="ath-stats">
+      <div class="scard text-center">
+        <span class="scard-ico">📊</span>
+        <div class="scard-lbl">Total Sesiones</div>
+        <div class="scard-val">${stats.count}</div>
+      </div>
+      <div class="scard text-center">
+        <span class="scard-ico">⚡</span>
+        <div class="scard-lbl">Calidad Media</div>
+        <div class="scard-val cyan">${stats.count ? stats.avgQ : '—'}</div>
+      </div>
+      <div class="scard text-center">
+        <span class="scard-ico">🏆</span>
+        <div class="scard-lbl">Mejor Score</div>
+        <div class="scard-val emerald">${stats.count ? stats.bestQ : '—'}</div>
+      </div>
+      <div class="scard text-center">
+        <span class="scard-ico">⏱️</span>
+        <div class="scard-lbl">Tiempo Total</div>
+        <div class="scard-val">${Math.round(stats.totalTime / 60)}</div>
+        <div class="scard-unit">minutos</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-t">Sesiones de ${a.name}</div>
+      <div id="athDetailSessions"></div>
+    </div>`;
+
+  const sessEl = document.getElementById('athDetailSessions');
+  if (!sessions.length) {
+    sessEl.innerHTML = `<div class="empty" style="padding:24px 0">
+      <span class="empty-i">📊</span>
+      <div class="empty-t">Sin sesiones aún</div>
+      <div class="empty-d">Inicia la primera sesión para este deportista</div></div>`;
+  } else {
+    sessEl.innerHTML = sessions.map(s => {
+      const sp2 = SPORTS[s.sport] || SPORTS.general;
+      const ql = qlabel(s.avgQ);
+      const bc = s.avgQ >= 70 ? 'b-ok' : s.avgQ >= 55 ? 'b-wn' : 'b-bd';
+      return `<div class="sitem" onclick="viewSess(${s.id})">
+        <div class="sitem-ico">${sp2.icon}</div>
+        <div class="sitem-info" style="min-width:0">
+          <div class="sitem-name">${s.name}</div>
+          <div class="sitem-meta">${new Date(s.date).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}
+            · ${Math.floor(s.dur / 60)}m ${s.dur % 60}s · ${s.frames} frames</div>
+        </div>
+        <div style="text-align:right;flex-shrink:0">
+          <div class="sitem-score" style="color:${ql.clr}">${s.avgQ}</div>
+          <span class="badge ${bc}">${ql.txt}</span>
+        </div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function openNewAthleteModal() {
+  S.editingAthleteId = null;
+  document.getElementById('athName').value = '';
+  document.getElementById('mAthTitle').textContent = 'Nuevo Deportista';
+  document.getElementById('mAthSubmitBtn').innerHTML = '➕&nbsp; Crear Deportista';
+  // Reset sport selection
+  document.querySelectorAll('#mAthSports .sport-opt').forEach(o => o.classList.toggle('sel', o.dataset.s === 'running'));
+  openModal('mNewAthlete');
+}
+
+function openEditAthleteModal(id) {
+  const a = getAthletes().find(x => x.id === id);
+  if (!a) return;
+  S.editingAthleteId = id;
+  document.getElementById('athName').value = a.name;
+  document.getElementById('mAthTitle').textContent = 'Editar Deportista';
+  document.getElementById('mAthSubmitBtn').innerHTML = '💾&nbsp; Guardar';
+  document.querySelectorAll('#mAthSports .sport-opt').forEach(o => o.classList.toggle('sel', o.dataset.s === a.sport));
+  openModal('mNewAthlete');
+}
+
+function submitAthlete() {
+  const name = document.getElementById('athName').value.trim();
+  if (!name) { toast('Ingresa el nombre del deportista', 'err'); return; }
+  const sportEl = document.querySelector('#mAthSports .sport-opt.sel');
+  const sport = sportEl ? sportEl.dataset.s : 'general';
+  saveAthlete({ name, sport });
+  closeModal('mNewAthlete');
+  renderAthletes();
+  refreshHome();
+  if (S.editingAthleteId === null) {
+    toast('Deportista creado correctamente', 'ok');
+  } else {
+    toast('Deportista actualizado', 'ok');
+  }
+  // If we were on athlete detail, refresh it
+  if (S.curAthlete) {
+    const updated = getAthletes().find(a => a.id === S.curAthlete.id);
+    if (updated) {
+      S.curAthlete = updated;
+      renderAthleteDetail(updated.id);
+    }
+  }
+}
+
+function startSessionForAthlete(id) {
+  const a = getAthletes().find(x => x.id === id);
+  if (!a) return;
+  S.curAthlete = a;
+  S.sport = a.sport;
+  // Update session start modal to reflect athlete
+  document.querySelectorAll('#mSports .sport-opt').forEach(o => o.classList.toggle('sel', o.dataset.s === a.sport));
+  // Show athlete indicator in modal
+  const sp = SPORTS[a.sport] || SPORTS.general;
+  const initials = getAthleteInitials(a.name);
+  const indicator = document.getElementById('mStartAthleteIndicator');
+  indicator.style.display = '';
+  indicator.innerHTML = `<div class="ath-session-indicator">
+    <div class="ath-avatar ${a.sport}">${initials}</div>
+    <div>
+      <div class="ath-session-indicator-name">${a.name}</div>
+      <div class="ath-session-indicator-sub">Sesión para este deportista · ${sp.icon} ${sp.name}</div>
+    </div>
+  </div>`;
+  openModal('mStart');
+}
 
 /* ═══ INIT ═══ */
 async function init() {
@@ -1034,6 +1517,7 @@ async function init() {
     document.getElementById('loader').style.display = 'none';
     initCharts();
     refreshHome();
+    updateAthBadge();
     toast('Motor de análisis listo ✓', 'ok');
   } catch(e) {
     console.error(e);
@@ -1057,10 +1541,15 @@ function showView(id) {
   document.querySelectorAll('.nav-item,.bnav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('view-' + id).classList.add('active');
   document.querySelectorAll(`[onclick*="showView('${id}')"]`).forEach(el => el.classList.add('active'));
-  if (id === 'tracking')  { startCam(); syncSportUI(); }
-  else if (id === 'history') renderHistory();
-  else if (id === 'reports') renderReports();
-  else if (id === 'home')    refreshHome();
+  if (id === 'tracking')        { startCam(); syncSportUI(); }
+  else if (id === 'history')    renderHistory();
+  else if (id === 'reports')    renderReports();
+  else if (id === 'home')       refreshHome();
+  else if (id === 'athletes')   renderAthletes();
+  else if (id === 'athlete-detail') {
+    if (S.curAthlete) renderAthleteDetail(S.curAthlete.id);
+    else showView('athletes');
+  }
 }
 
 /* ═══ CAMERA ═══ */
@@ -1339,7 +1828,8 @@ function saveSession() {
   const name = document.getElementById('sessName').value.trim() ||
     SPORTS[S.sport].name + ' · ' + new Date().toLocaleDateString('es-ES');
   const sess = { id:Date.now(), date:new Date().toISOString(), sport:S.sport,
-    name, dur, avgQ, avgS, maxQ, frames:d.length, data:d };
+    name, dur, avgQ, avgS, maxQ, frames:d.length, data:d,
+    athleteId: S.curAthlete ? S.curAthlete.id : null };
   const all = getSessions(); all.unshift(sess);
   localStorage.setItem('sa_sessions', JSON.stringify(all));
   S.curSession = sess; return sess;
@@ -1352,7 +1842,43 @@ function getSessions() {
 /* ═══ HOME ═══ */
 function refreshHome() {
   const all = getSessions();
+  const athletes = getAthletes();
+
   document.getElementById('sSessions').textContent = all.length;
+
+  // Athletes row on home
+  const athSection = document.getElementById('homeAthletesSection');
+  if (athletes.length > 0) {
+    athSection.style.display = '';
+    const athRow = document.getElementById('homeAthletesRow');
+    athRow.innerHTML = athletes.slice(0, 10).map(a => {
+      const sp = SPORTS[a.sport] || SPORTS.general;
+      const stats = getAthleteStats(a.id);
+      const initials = getAthleteInitials(a.name);
+      return `<div class="athlete-card" onclick="selectAthlete(${a.id})">
+        <div class="athlete-card-top">
+          <div class="ath-avatar ${a.sport}">${initials}</div>
+          <div class="athlete-card-info">
+            <div class="athlete-card-name">${a.name}</div>
+            <div class="athlete-card-sport">${sp.icon} ${sp.name}</div>
+          </div>
+        </div>
+        <div class="athlete-card-stats">
+          <div class="athlete-card-stat">
+            <div class="athlete-card-stat-val cyan">${stats.count}</div>
+            <div class="athlete-card-stat-lbl">Sesiones</div>
+          </div>
+          <div class="athlete-card-stat">
+            <div class="athlete-card-stat-val">${stats.count ? stats.avgQ : '—'}</div>
+            <div class="athlete-card-stat-lbl">Calidad</div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  } else {
+    athSection.style.display = 'none';
+  }
+
   if (!all.length) {
     document.getElementById('sQuality').textContent = '—';
     document.getElementById('sTime').textContent    = '0';
@@ -1370,10 +1896,11 @@ function refreshHome() {
   document.getElementById('homeRecent').innerHTML = all.slice(0,5).map(s => {
     const sp = SPORTS[s.sport]||SPORTS.general;
     const ql = qlabel(s.avgQ);
+    const athName = getAthleteNameById(s.athleteId);
     return `<div class="sitem" onclick="viewSess(${s.id})">
       <div class="sitem-ico">${sp.icon}</div>
       <div class="sitem-info"><div class="sitem-name">${s.name}</div>
-      <div class="sitem-meta">${new Date(s.date).toLocaleDateString('es-ES')} · ${s.dur}s</div></div>
+      <div class="sitem-meta">${new Date(s.date).toLocaleDateString('es-ES')} · ${s.dur}s${athName ? ' · <span class="sess-athlete-badge">👤 '+athName+'</span>' : ''}</div></div>
       <div class="sitem-score" style="color:${ql.clr}">${s.avgQ}</div></div>`;
   }).join('');
 
@@ -1383,6 +1910,13 @@ function refreshHome() {
     S.homeChartInst.data.datasets[0].data = rec.map(s=>s.avgQ);
     S.homeChartInst.update();
   }
+}
+
+function getAthleteNameById(athleteId) {
+  if (!athleteId) return '';
+  const athletes = getAthletes();
+  const a = athletes.find(x => x.id === athleteId);
+  return a ? a.name : '';
 }
 
 /* ═══ HISTORY ═══ */
@@ -1399,10 +1933,11 @@ function renderHistory() {
     const sp = SPORTS[s.sport]||SPORTS.general;
     const ql = qlabel(s.avgQ);
     const bc = s.avgQ>=70?'b-ok':s.avgQ>=55?'b-wn':'b-bd';
+    const athName = getAthleteNameById(s.athleteId);
     return `<div class="sitem" onclick="viewSess(${s.id})">
       <div class="sitem-ico">${sp.icon}</div>
       <div class="sitem-info" style="min-width:0">
-        <div class="sitem-name">${s.name}</div>
+        <div class="sitem-name">${s.name}${athName ? ' <span class="sess-athlete-badge">👤 '+athName+'</span>' : ''}</div>
         <div class="sitem-meta">${new Date(s.date).toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'})}
           · ${Math.floor(s.dur/60)}m ${s.dur%60}s · ${s.frames} frames</div>
       </div>
@@ -1681,7 +2216,13 @@ function initCharts() {
 
 /* ═══ MODALS ═══ */
 function openModal(id)  { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  // Clear athlete indicator when closing session start modal
+  if (id === 'mStart') {
+    document.getElementById('mStartAthleteIndicator').style.display = 'none';
+  }
+}
 
 document.getElementById('mSports').addEventListener('click', e => {
   const opt = e.target.closest('.sport-opt');
@@ -1691,9 +2232,21 @@ document.getElementById('mSports').addEventListener('click', e => {
   S.sport = opt.dataset.s;
 });
 
-function startSession() { closeModal('mStart'); showView('tracking'); }
+document.getElementById('mAthSports').addEventListener('click', e => {
+  const opt = e.target.closest('.sport-opt');
+  if (!opt) return;
+  document.querySelectorAll('#mAthSports .sport-opt').forEach(o=>o.classList.remove('sel'));
+  opt.classList.add('sel');
+});
+
+function startSession() {
+  closeModal('mStart');
+  showView('tracking');
+}
+
 function quickStart(sp) {
   S.sport = sp;
+  S.curAthlete = null; // Clear athlete for quick starts
   document.querySelectorAll('#mSports .sport-opt').forEach(o=>o.classList.toggle('sel',o.dataset.s===sp));
   showView('tracking');
 }
