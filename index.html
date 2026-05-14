@@ -880,6 +880,215 @@
     .upload-zone-ico { font-size: 36px; }
     .video-preview-wrap video { max-height: 260px; }
   }
+
+  /* ═══════════════════════════════════════
+     FICHA TECNICA — WIZARD
+  ═══════════════════════════════════════ */
+  .ficha-overlay {
+    display: none; position: fixed; inset: 0;
+    background: var(--bg);
+    z-index: 300;
+    overflow-y: auto;
+  }
+  .ficha-overlay.open { display: block; animation: fadeIn 0.3s; }
+
+  .ficha-container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 20px 120px;
+  }
+
+  .ficha-top-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 8px;
+  }
+  .ficha-close-btn {
+    background: rgba(148,163,184,0.08); border: 1px solid var(--b);
+    color: var(--t2); border-radius: var(--r); padding: 8px 16px;
+    font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    font-family: inherit;
+  }
+  .ficha-close-btn:hover { background: rgba(148,163,184,0.14); color: var(--t1); }
+  .ficha-top-title { font-size: 15px; font-weight: 700; }
+
+  .ficha-steps {
+    display: flex; gap: 4px; margin-bottom: 32px;
+    position: sticky; top: 0;
+    background: var(--bg);
+    padding: 16px 0 12px;
+    z-index: 10;
+  }
+  .ficha-step-dot {
+    flex: 1; height: 4px;
+    background: var(--s3);
+    border-radius: 2px;
+    transition: background 0.3s;
+  }
+  .ficha-step-dot.done { background: var(--cyan2); }
+  .ficha-step-dot.active { background: var(--cyan); box-shadow: 0 0 8px rgba(34,211,238,0.3); }
+
+  .ficha-step-header {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 8px;
+  }
+  .ficha-step-icon { font-size: 28px; }
+  .ficha-step-num { font-size: 11px; color: var(--cyan); font-weight: 600; text-transform: uppercase; letter-spacing: 1.5px; }
+  .ficha-step-title { font-size: 22px; font-weight: 800; letter-spacing: -0.3px; }
+  .ficha-step-desc { font-size: 13px; color: var(--t2); margin-bottom: 28px; line-height: 1.6; }
+
+  .fg { margin-bottom: 22px; }
+  .fg-label { font-size: 13px; font-weight: 600; color: var(--t1); margin-bottom: 8px; display: block; }
+  .fg-hint { font-size: 11px; color: var(--t3); margin-top: 4px; font-style: italic; }
+
+  .toggle-group { display: flex; gap: 8px; flex-wrap: wrap; }
+  .toggle-btn {
+    padding: 8px 18px;
+    border-radius: var(--r);
+    border: 1px solid var(--b);
+    background: var(--s2);
+    color: var(--t2);
+    font-size: 13px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+  }
+  .toggle-btn:hover { border-color: rgba(34,211,238,0.25); color: var(--t1); }
+  .toggle-btn.sel {
+    background: rgba(34,211,238,0.12);
+    border-color: var(--cyan2);
+    color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .check-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .check-pill {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--b);
+    background: var(--s2);
+    color: var(--t2);
+    font-size: 12.5px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .check-pill:hover { border-color: rgba(34,211,238,0.2); }
+  .check-pill.sel {
+    background: rgba(34,211,238,0.1);
+    border-color: rgba(34,211,238,0.35);
+    color: var(--cyan);
+  }
+
+  .scale-row { display: flex; gap: 4px; }
+  .scale-num {
+    width: 36px; height: 36px;
+    border-radius: var(--r);
+    border: 1px solid var(--b);
+    background: var(--s2);
+    color: var(--t2);
+    font-size: 13px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .scale-num:hover { border-color: rgba(34,211,238,0.25); }
+  .scale-num.sel {
+    background: var(--cyan2);
+    border-color: var(--cyan);
+    color: #fff;
+  }
+
+  .cond-field { display: none; margin-top: 10px; animation: fadeUp 0.2s ease; }
+  .cond-field.show { display: block; }
+
+  .ficha-footer {
+    position: fixed; bottom: 0; left: 0; right: 0;
+    background: rgba(5,6,15,0.92);
+    backdrop-filter: blur(16px);
+    border-top: 1px solid var(--b);
+    padding: 14px 20px;
+    z-index: 310;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .ficha-footer-info { font-size: 12px; color: var(--t3); }
+
+  .bmi-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .bmi-normal { background: rgba(52,211,153,0.12); color: var(--emerald); }
+  .bmi-overweight { background: rgba(251,191,36,0.12); color: var(--gold); }
+  .bmi-obese { background: rgba(251,113,133,0.12); color: var(--rose); }
+
+  .ficha-summary {
+    background: linear-gradient(135deg, rgba(34,211,238,0.06), rgba(129,140,248,0.06));
+    border: 1px solid rgba(34,211,238,0.15);
+    border-radius: var(--r3);
+    padding: 20px;
+  }
+  .ficha-summary-row {
+    display: flex; justify-content: space-between;
+    padding: 6px 0;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .ficha-summary-row:last-child { border: none; }
+  .ficha-summary-label { color: var(--t2); }
+  .ficha-summary-value { font-weight: 600; }
+
+  .ficha-section-title {
+    font-size: 15px; font-weight: 700; color: var(--cyan);
+    margin: 24px 0 16px; padding-bottom: 8px;
+    border-bottom: 1px solid rgba(34,211,238,0.12);
+  }
+
+  .ficha-inp {
+    width: 100%; background: var(--bg2); border: 1px solid var(--b);
+    color: var(--t1); padding: 10px 14px; border-radius: var(--r);
+    font-size: 13px; outline: none; transition: border-color 0.2s; font-family: inherit;
+  }
+  .ficha-inp:focus { border-color: rgba(34,211,238,0.4); }
+  .ficha-inp::placeholder { color: var(--t3); }
+
+  .ficha-textarea {
+    width: 100%; background: var(--bg2); border: 1px solid var(--b);
+    color: var(--t1); padding: 10px 14px; border-radius: var(--r);
+    font-size: 13px; outline: none; transition: border-color 0.2s;
+    font-family: inherit; resize: vertical; min-height: 80px;
+  }
+  .ficha-textarea:focus { border-color: rgba(34,211,238,0.4); }
+  .ficha-textarea::placeholder { color: var(--t3); }
+
+  .ficha-inline-row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px;
+  }
+  .ficha-inline-row-3 {
+    display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px;
+  }
+
+  .ficha-readonly {
+    background: rgba(34,211,238,0.04); border: 1px solid rgba(34,211,238,0.12);
+    color: var(--cyan); padding: 10px 14px; border-radius: var(--r);
+    font-size: 13px; font-weight: 600;
+  }
+
+  .ficha-card-status {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0 10px;
+  }
+  .ficha-card-status-icon { font-size: 20px; }
+  .ficha-card-status-text { font-size: 13px; color: var(--t2); }
+  .ficha-card-status-text strong { color: var(--t1); }
+
+  @media (max-width: 768px) {
+    .ficha-container { padding: 16px 14px 120px; }
+    .ficha-step-title { font-size: 18px; }
+    .ficha-inline-row, .ficha-inline-row-3 { grid-template-columns: 1fr; }
+    .scale-row { flex-wrap: wrap; }
+    .ficha-footer { padding: 12px 14px; }
+  }
   </style>
 </head>
 <body>
@@ -968,6 +1177,26 @@
     <div style="display:flex;gap:10px">
       <button class="btn btn-ghost" onclick="closeModal('mNewAthlete')" style="flex:1">Cancelar</button>
       <button class="btn btn-p btn-lg" onclick="submitAthlete()" style="flex:2" id="mAthSubmitBtn">➕&nbsp; Crear Deportista</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FICHA TÉCNICA OVERLAY ═══ -->
+<div class="ficha-overlay" id="fichaOverlay">
+  <div class="ficha-container">
+    <div class="ficha-top-bar">
+      <button class="ficha-close-btn" onclick="closeFicha()">← Volver</button>
+      <div class="ficha-top-title">📋 Ficha Técnica</div>
+      <button class="ficha-close-btn" onclick="saveFicha();closeFicha()">💾 Guardar</button>
+    </div>
+    <div class="ficha-steps" id="fichaSteps"></div>
+    <div id="fichaBody"></div>
+  </div>
+  <div class="ficha-footer">
+    <div class="ficha-footer-info" id="fichaFooterInfo">Paso 1 de 7</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-ghost" id="fichaPrevBtn" onclick="fichaPrev()" style="display:none">← Anterior</button>
+      <button class="btn btn-p" id="fichaNextBtn" onclick="fichaNext()">Siguiente →</button>
     </div>
   </div>
 </div>
@@ -1518,6 +1747,7 @@ function renderAthleteDetail(id) {
       </div>
       <div class="ath-header-actions">
         <button class="btn btn-p" onclick="startSessionForAthlete(${a.id})">▶&nbsp; Nueva Sesión</button>
+        <button class="btn btn-outline" onclick="openFicha(${a.id})">📋&nbsp; Ficha Técnica</button>
         <button class="btn btn-ghost" onclick="openEditAthleteModal(${a.id})">✏️&nbsp; Editar</button>
         <button class="btn btn-outline" onclick="startVideoForAthlete(${a.id})">🎥&nbsp; Analizar Vídeo</button>
         <button class="btn btn-danger" onclick="deleteAthlete(${a.id})">🗑️</button>
@@ -1547,6 +1777,8 @@ function renderAthleteDetail(id) {
         <div class="scard-unit">minutos</div>
       </div>
     </div>
+
+    ${renderFichaCard(a.id)}
 
     <div class="card">
       <div class="card-t">Sesiones de ${a.name}</div>
@@ -2796,6 +3028,795 @@ function saveVideoSession() {
   document.getElementById('videoSaveBtn').disabled = true;
   document.getElementById('videoSaveBtn').innerHTML = '✓&nbsp; Guardada';
   refreshHome();
+}
+
+/* ═══════════════════════════════════════════════════
+   FICHA TÉCNICA — TENNIS TECHNICAL FORM
+   ═══════════════════════════════════════════════════ */
+
+let fichaData = {};
+let fichaStep = 1;
+let fichaAthleteId = null;
+let fichaUnsaved = false;
+
+const FICHA_STEPS = [
+  { num: 1, icon: '👤', title: 'Datos Generales', desc: 'Información personal, nivel competitivo y hábitos de entrenamiento.' },
+  { num: 2, icon: '🏥', title: 'Historial Lesional', desc: 'Centrado en articulaciones clave del tenis. Permite identificar riesgos específicos por gesto técnico o sobreuso.' },
+  { num: 3, icon: '🎾', title: 'Saque y Derecha', desc: 'Análisis por gesto técnico + sensaciones en situaciones reales de juego.' },
+  { num: 4, icon: '🎾', title: 'Revés y Volea', desc: 'Perfil técnico del revés, volea y smash.' },
+  { num: 5, icon: '🏃', title: 'Desplazamientos', desc: 'Estabilidad dinámica, superficies y carga de competición.' },
+  { num: 6, icon: '💪', title: 'Entrenamiento y Prevención', desc: 'Trabajo preventivo, recuperación y percepción corporal.' },
+  { num: 7, icon: '🎯', title: 'Objetivos y Resumen', desc: 'Objetivos de la valoración y resumen general.' },
+];
+
+function getFichas() {
+  try { return JSON.parse(localStorage.getItem('sa_fichas') || '[]'); } catch { return []; }
+}
+function saveFichasToStorage(fichas) {
+  localStorage.setItem('sa_fichas', JSON.stringify(fichas));
+}
+function getFicha(athleteId) {
+  return getFichas().find(f => f.athleteId === athleteId) || null;
+}
+
+function renderFichaCard(athleteId) {
+  const ficha = getFicha(athleteId);
+  if (ficha) {
+    const d = new Date(ficha.updatedAt);
+    const dateStr = d.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+    return `<div class="card mb16">
+      <div class="card-t">📋 Ficha Técnica</div>
+      <div class="ficha-card-status">
+        <div class="ficha-card-status-icon">✅</div>
+        <div class="ficha-card-status-text"><strong>Completada</strong> el ${dateStr}</div>
+      </div>
+      <button class="btn btn-outline" onclick="openFicha(${athleteId})" style="width:100%">Ver / Editar Ficha</button>
+    </div>`;
+  }
+  return `<div class="card mb16">
+    <div class="card-t">📋 Ficha Técnica</div>
+    <div class="ficha-card-status">
+      <div class="ficha-card-status-icon">📝</div>
+      <div class="ficha-card-status-text">Sin completar</div>
+    </div>
+    <button class="btn btn-p" onclick="openFicha(${athleteId})" style="width:100%">Completar Ficha Técnica</button>
+  </div>`;
+}
+
+function openFicha(athleteId) {
+  fichaAthleteId = athleteId;
+  fichaStep = 1;
+  fichaUnsaved = false;
+
+  const existing = getFicha(athleteId);
+  if (existing) {
+    fichaData = JSON.parse(JSON.stringify(existing));
+  } else {
+    const a = getAthletes().find(x => x.id === athleteId);
+    fichaData = {
+      id: Date.now(),
+      athleteId: athleteId,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      step1: { name: a ? a.name : '', dob: '', age: '', sex: '', height: '', weight: '', bmi: '', handedness: '', footedness: '', competes: '', level: '', club: '', hoursTraining: '', hoursPhysical: '', hoursSleep: '' },
+      step2: { injuries: [], otherInjury: '', currentLimitation: { has: '', details: '' }, surgeries: { has: '', details: '' }, medication: { has: '', details: '' } },
+      step3: { serve: { types: [], modifiedThrow: { has: '', details: '' }, thoracicBlock: '', velocityLoss: '' }, forehand: { grip: '', loadPhase: [], defenseIssues: { has: '', details: '' } } },
+      step4: { backhand: { type: '', rotationalLoad: '', imbalances: '', painAfter: { has: '', details: '' } }, volley: { scapulaStability: '', cervicalTension: '', avoidDeepVolley: '' } },
+      step5: { surfaces: [], directionChangeIssues: '', pushFootIssues: '', lateralImbalance: '', overloadAreas: [], competitionFrequency: '' },
+      step6: { strengthTraining: '', activations: [], mobilityWork: '', physioAccess: '', recoveryStrategies: [], loadZones: [], compensations: '', avoidanceMovements: { has: '', details: '' } },
+      step7: { goals: [], otherGoal: '', wantsReport: '', observations: '' }
+    };
+  }
+
+  document.getElementById('fichaOverlay').classList.add('open');
+  renderFichaStepDots();
+  renderFichaStep(fichaStep);
+  updateFichaFooter();
+  document.getElementById('fichaOverlay').scrollTop = 0;
+}
+
+function closeFicha() {
+  if (fichaUnsaved && !confirm('Tienes cambios sin guardar. ¿Salir sin guardar?')) return;
+  document.getElementById('fichaOverlay').classList.remove('open');
+  // Refresh athlete detail if visible
+  if (S.curAthlete) renderAthleteDetail(S.curAthlete.id);
+}
+
+function renderFichaStepDots() {
+  const el = document.getElementById('fichaSteps');
+  el.innerHTML = FICHA_STEPS.map((s, i) => {
+    const cls = (i + 1) < fichaStep ? 'done' : (i + 1) === fichaStep ? 'active' : '';
+    return `<div class="ficha-step-dot ${cls}" onclick="fichaGoTo(${i + 1})" style="cursor:pointer" title="${s.title}"></div>`;
+  }).join('');
+}
+
+function updateFichaFooter() {
+  document.getElementById('fichaFooterInfo').textContent = `Paso ${fichaStep} de 7 — ${FICHA_STEPS[fichaStep - 1].title}`;
+  document.getElementById('fichaPrevBtn').style.display = fichaStep > 1 ? '' : 'none';
+  const nextBtn = document.getElementById('fichaNextBtn');
+  if (fichaStep === 7) {
+    nextBtn.innerHTML = '💾 Guardar Ficha';
+    nextBtn.onclick = () => { saveFicha(); closeFicha(); };
+  } else {
+    nextBtn.innerHTML = 'Siguiente →';
+    nextBtn.onclick = fichaNext;
+  }
+}
+
+function fichaNext() {
+  collectFichaStep(fichaStep);
+  if (fichaStep < 7) {
+    fichaStep++;
+    renderFichaStepDots();
+    renderFichaStep(fichaStep);
+    updateFichaFooter();
+    document.getElementById('fichaOverlay').scrollTop = 0;
+  }
+}
+
+function fichaPrev() {
+  collectFichaStep(fichaStep);
+  if (fichaStep > 1) {
+    fichaStep--;
+    renderFichaStepDots();
+    renderFichaStep(fichaStep);
+    updateFichaFooter();
+    document.getElementById('fichaOverlay').scrollTop = 0;
+  }
+}
+
+function fichaGoTo(step) {
+  collectFichaStep(fichaStep);
+  fichaStep = step;
+  renderFichaStepDots();
+  renderFichaStep(fichaStep);
+  updateFichaFooter();
+  document.getElementById('fichaOverlay').scrollTop = 0;
+}
+
+function saveFicha() {
+  collectFichaStep(fichaStep);
+  fichaData.updatedAt = new Date().toISOString();
+  let fichas = getFichas();
+  const idx = fichas.findIndex(f => f.athleteId === fichaAthleteId);
+  if (idx !== -1) {
+    fichas[idx] = fichaData;
+  } else {
+    fichas.push(fichaData);
+  }
+  saveFichasToStorage(fichas);
+  fichaUnsaved = false;
+  toast('Ficha técnica guardada', 'ok');
+}
+
+// Helper to make toggle HTML
+function fichaToggle(name, value, options) {
+  return `<div class="toggle-group" data-field="${name}">` +
+    options.map(o => `<div class="toggle-btn${value === o.val ? ' sel' : ''}" data-val="${o.val}">${o.label}</div>`).join('') +
+    '</div>';
+}
+
+// Helper for multi-select check pills
+function fichaChecks(name, selected, options) {
+  return `<div class="check-grid" data-field="${name}">` +
+    options.map(o => `<div class="check-pill${(selected || []).includes(o.val) ? ' sel' : ''}" data-val="${o.val}">${o.label}</div>`).join('') +
+    '</div>';
+}
+
+// Helper for scale 1-10
+function fichaScale(name, value) {
+  return `<div class="scale-row" data-field="${name}">` +
+    Array.from({ length: 10 }, (_, i) => `<div class="scale-num${value == (i + 1) ? ' sel' : ''}" data-val="${i + 1}">${i + 1}</div>`).join('') +
+    '</div>';
+}
+
+// Helper for yes/no with conditional
+function fichaYesNo(name, value, condFieldId, condContent) {
+  const html = fichaToggle(name, value, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }]);
+  if (condFieldId) {
+    return html + `<div class="cond-field${value === 'si' ? ' show' : ''}" id="${condFieldId}">${condContent}</div>`;
+  }
+  return html;
+}
+
+function renderFichaStep(n) {
+  const step = FICHA_STEPS[n - 1];
+  const d = fichaData['step' + n] || {};
+  let html = `
+    <div class="ficha-step-header">
+      <div class="ficha-step-icon">${step.icon}</div>
+      <div>
+        <div class="ficha-step-num">Paso ${step.num} de 7</div>
+        <div class="ficha-step-title">${step.title}</div>
+      </div>
+    </div>
+    <div class="ficha-step-desc">${step.desc}</div>`;
+
+  if (n === 1) html += renderFichaStep1(d);
+  else if (n === 2) html += renderFichaStep2(d);
+  else if (n === 3) html += renderFichaStep3(d);
+  else if (n === 4) html += renderFichaStep4(d);
+  else if (n === 5) html += renderFichaStep5(d);
+  else if (n === 6) html += renderFichaStep6(d);
+  else if (n === 7) html += renderFichaStep7(d);
+
+  document.getElementById('fichaBody').innerHTML = html;
+  attachFichaListeners();
+  fichaUnsaved = true;
+}
+
+function renderFichaStep1(d) {
+  return `
+    <div class="fg">
+      <label class="fg-label">Nombre completo</label>
+      <input class="ficha-inp" id="f-name" type="text" value="${esc(d.name || '')}" placeholder="Nombre y apellidos">
+    </div>
+    <div class="ficha-inline-row">
+      <div class="fg">
+        <label class="fg-label">Fecha de nacimiento</label>
+        <input class="ficha-inp" id="f-dob" type="date" value="${d.dob || ''}" onchange="fichaCalcAge()">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Edad</label>
+        <div class="ficha-readonly" id="f-age">${d.age || 'Se calcula automáticamente'}</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fg-label">Sexo</label>
+      ${fichaToggle('sex', d.sex, [{ val: 'M', label: '♂ Masculino' }, { val: 'F', label: '♀ Femenino' }])}
+    </div>
+    <div class="ficha-inline-row-3">
+      <div class="fg">
+        <label class="fg-label">Altura (cm)</label>
+        <input class="ficha-inp" id="f-height" type="number" value="${d.height || ''}" placeholder="175" oninput="fichaCalcBMI()">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Peso (kg)</label>
+        <input class="ficha-inp" id="f-weight" type="number" value="${d.weight || ''}" placeholder="70" oninput="fichaCalcBMI()">
+      </div>
+      <div class="fg">
+        <label class="fg-label">IMC</label>
+        <div class="ficha-readonly" id="f-bmi">${d.bmi ? d.bmi : 'Automático'}</div>
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fg-label">Lateralidad manual</label>
+      ${fichaToggle('handedness', d.handedness, [{ val: 'diestra', label: 'Diestra' }, { val: 'zurda', label: 'Zurda' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">Lateralidad podal (pierna inicio carrera lateral)</label>
+      ${fichaToggle('footedness', d.footedness, [{ val: 'derecha', label: 'Derecha' }, { val: 'izquierda', label: 'Izquierda' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Compites en torneos oficiales?</label>
+      ${fichaToggle('competes', d.competes, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">Nivel competitivo</label>
+      ${fichaToggle('level', d.level, [
+        { val: 'itf', label: 'ITF/ATP/WTA' },
+        { val: 'nacional', label: 'Nacional absoluto' },
+        { val: 'sub18', label: 'Sub-18/Sub-16' },
+        { val: 'amateur', label: 'Amateur competitivo' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">Club o academia</label>
+      <input class="ficha-inp" id="f-club" type="text" value="${esc(d.club || '')}" placeholder="Nombre del club o academia">
+    </div>
+    <div class="ficha-inline-row-3">
+      <div class="fg">
+        <label class="fg-label">Horas pista/semana</label>
+        <input class="ficha-inp" id="f-hoursTraining" type="number" step="0.5" min="0" value="${d.hoursTraining || ''}" placeholder="10">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Horas prep. física/sem.</label>
+        <input class="ficha-inp" id="f-hoursPhysical" type="number" step="0.5" min="0" value="${d.hoursPhysical || ''}" placeholder="4">
+      </div>
+      <div class="fg">
+        <label class="fg-label">Horas sueño/noche</label>
+        <input class="ficha-inp" id="f-hoursSleep" type="number" step="0.5" min="0" value="${d.hoursSleep || ''}" placeholder="8">
+      </div>
+    </div>`;
+}
+
+function renderFichaStep2(d) {
+  const injuries = [
+    { val: 'manguito', label: 'Tendinopatía del manguito rotador' },
+    { val: 'slap', label: 'Lesión complejo postero-superior hombro (SLAP, inestabilidad)' },
+    { val: 'epicondilalgia', label: 'Epicondilalgia / epitroclealgia (codo de tenista/golfista)' },
+    { val: 'tunel_carpiano', label: 'Síndrome del túnel carpiano' },
+    { val: 'lumbalgia', label: 'Lumbalgia mecánica / sobrecarga paravertebral' },
+    { val: 'pubalgia', label: 'Pubalgia / dolor inguinal' },
+    { val: 'condropatia', label: 'Condropatía rotuliana / síndrome femoropatelar' },
+    { val: 'tobillo', label: 'Inestabilidad tobillo / esguinces recidivantes' },
+    { val: 'otra', label: 'Otra' },
+  ];
+  return `
+    <div class="fg">
+      <label class="fg-label">¿Has sufrido alguna lesión relevante en los últimos 2 años?</label>
+      ${fichaChecks('injuries', d.injuries, injuries)}
+      <div class="cond-field${(d.injuries || []).includes('otra') ? ' show' : ''}" id="cond-otherInjury">
+        <input class="ficha-inp" id="f-otherInjury" type="text" value="${esc(d.otherInjury || '')}" placeholder="Especifica la lesión">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Estás actualmente limitado/a por alguna molestia?</label>
+      ${fichaYesNo('currentLimitation', d.currentLimitation?.has, 'cond-limitation',
+        `<textarea class="ficha-textarea" id="f-limitationDetails" placeholder="Indica estructura afectada, inicio, evolución y tratamiento recibido">${esc(d.currentLimitation?.details || '')}</textarea>`
+      )}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Cirugías previas relacionadas con el aparato locomotor?</label>
+      ${fichaYesNo('surgeries', d.surgeries?.has, 'cond-surgeries',
+        `<textarea class="ficha-textarea" id="f-surgeriesDetails" placeholder="Tipo de cirugía, fecha, evolución">${esc(d.surgeries?.details || '')}</textarea>`
+      )}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Tomas medicación habitual?</label>
+      ${fichaYesNo('medication', d.medication?.has, 'cond-medication',
+        `<textarea class="ficha-textarea" id="f-medicationDetails" placeholder="Tipo de medicación y frecuencia">${esc(d.medication?.details || '')}</textarea>`
+      )}
+    </div>`;
+}
+
+function renderFichaStep3(d) {
+  const s = d.serve || {};
+  const f = d.forehand || {};
+  return `
+    <div class="ficha-section-title">🎾 Saque</div>
+    <div class="fg">
+      <label class="fg-label">Tipo de saque dominante (puedes marcar varios)</label>
+      ${fichaChecks('serveTypes', s.types, [
+        { val: 'plano', label: 'Plano' },
+        { val: 'cortado', label: 'Cortado (slice)' },
+        { val: 'liftado', label: 'Liftado (kick)' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Modificas el lanzamiento de bola por dolor/inestabilidad en hombro o lumbar?</label>
+      ${fichaYesNo('serveModifiedThrow', s.modifiedThrow?.has, 'cond-serveModified',
+        `<textarea class="ficha-textarea" id="f-serveModifiedDetails" placeholder="Describe las modificaciones y la causa">${esc(s.modifiedThrow?.details || '')}</textarea>`
+      )}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Sientes bloqueo torácico o rigidez en la fase de latigazo?</label>
+      ${fichaToggle('serveThoracicBlock', s.thoracicBlock, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Pérdida de velocidad/control tras repeticiones consecutivas?</label>
+      ${fichaToggle('serveVelocityLoss', s.velocityLoss, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+
+    <div class="ficha-section-title">🎾 Derecha (Drive)</div>
+    <div class="fg">
+      <label class="fg-label">Empuñadura</label>
+      ${fichaToggle('forehandGrip', f.grip, [
+        { val: 'eastern', label: 'Eastern' },
+        { val: 'semiwestern', label: 'Semi-Western' },
+        { val: 'western', label: 'Western' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿En qué fase notas más carga? (puedes marcar varias)</label>
+      ${fichaChecks('forehandLoadPhase', f.loadPhase, [
+        { val: 'armado', label: 'Armado' },
+        { val: 'aceleracion', label: 'Aceleración' },
+        { val: 'desaceleracion', label: 'Desaceleración' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Molestias en defensa con peso atrás o brazo alejado del tronco?</label>
+      ${fichaYesNo('forehandDefenseIssues', f.defenseIssues?.has, 'cond-forehandDefense',
+        `<textarea class="ficha-textarea" id="f-forehandDefenseDetails" placeholder="Describe las molestias">${esc(f.defenseIssues?.details || '')}</textarea>`
+      )}
+    </div>`;
+}
+
+function renderFichaStep4(d) {
+  const b = d.backhand || {};
+  const v = d.volley || {};
+  return `
+    <div class="ficha-section-title">🎾 Revés</div>
+    <div class="fg">
+      <label class="fg-label">Modalidad</label>
+      ${fichaToggle('backhandType', b.type, [
+        { val: 'una_mano', label: 'Una mano' },
+        { val: 'dos_manos', label: 'Dos manos' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Utilizas carga rotacional activa desde cadera/tronco?</label>
+      ${fichaToggle('backhandRotationalLoad', b.rotationalLoad, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Desequilibrios entre lado dominante y no dominante?</label>
+      ${fichaToggle('backhandImbalances', b.imbalances, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Dolor/rigidez tras series intensas de revés?</label>
+      ${fichaYesNo('backhandPainAfter', b.painAfter?.has, 'cond-backhandPain',
+        `<textarea class="ficha-textarea" id="f-backhandPainDetails" placeholder="Describe la zona y tipo de molestia">${esc(b.painAfter?.details || '')}</textarea>`
+      )}
+    </div>
+
+    <div class="ficha-section-title">🎾 Volea / Smash</div>
+    <div class="fg">
+      <label class="fg-label">¿Dificultad para estabilizar escápula al volear?</label>
+      ${fichaToggle('volleyScapula', v.scapulaStability, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Rigidez cervical o tensión en cadena posterior tras smash?</label>
+      ${fichaToggle('volleyCervical', v.cervicalTension, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Evitas volear profundo por molestias en codo/muñeca?</label>
+      ${fichaToggle('volleyAvoidDeep', v.avoidDeepVolley, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>`;
+}
+
+function renderFichaStep5(d) {
+  return `
+    <div class="fg">
+      <label class="fg-label">Superficie habitual de competición (puedes marcar varias)</label>
+      ${fichaChecks('surfaces', d.surfaces, [
+        { val: 'tierra', label: 'Tierra batida' },
+        { val: 'dura', label: 'Dura' },
+        { val: 'hierba', label: 'Hierba' },
+        { val: 'indoor', label: 'Indoor rápida' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Diferencias al frenar/cambiar dirección en diagonal inversa (lado no dominante)?</label>
+      ${fichaToggle('directionChangeIssues', d.directionChangeIssues, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Pérdida de reactividad o molestias en pie de empuje en laterales abiertos?</label>
+      ${fichaToggle('pushFootIssues', d.pushFootIssues, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">Desequilibrio percibido entre cadena lateral derecha e izquierda</label>
+      <div class="fg-hint">1 = ninguno, 10 = muy marcado</div>
+      ${fichaScale('lateralImbalance', d.lateralImbalance)}
+    </div>
+    <div class="fg">
+      <label class="fg-label">Sobrecarga tras partidos consecutivos</label>
+      ${fichaChecks('overloadAreas', d.overloadAreas, [
+        { val: 'aductores', label: 'Aductores' },
+        { val: 'isquiotibiales', label: 'Isquiotibiales' },
+        { val: 'fascia', label: 'Fascia plantar' },
+        { val: 'gemelos', label: 'Gemelos' },
+        { val: 'ninguna', label: 'Ninguna' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">Frecuencia de competición anual</label>
+      ${fichaToggle('competitionFrequency', d.competitionFrequency, [
+        { val: '<15', label: '< 15 torneos' },
+        { val: '15-25', label: '15 – 25' },
+        { val: '25-35', label: '25 – 35' },
+        { val: '>35', label: '> 35' }
+      ])}
+    </div>`;
+}
+
+function renderFichaStep6(d) {
+  return `
+    <div class="ficha-section-title">💪 Entrenamiento y prevención</div>
+    <div class="fg">
+      <label class="fg-label">¿Trabajo de fuerza estructurado ≥2 veces/semana?</label>
+      ${fichaToggle('strengthTraining', d.strengthTraining, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Activaciones previas antes del entrenamiento?</label>
+      ${fichaChecks('activations', d.activations, [
+        { val: 'gomas', label: 'Gomas' },
+        { val: 'core', label: 'Estabilización core' },
+        { val: 'movilidad', label: 'Movilidad dinámica' },
+        { val: 'ninguna', label: 'No realizo' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Trabajas movilidad torácica, glenohumeral, cadera y tobillo regularmente?</label>
+      ${fichaToggle('mobilityWork', d.mobilityWork, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Acceso semanal a fisioterapia deportiva?</label>
+      ${fichaToggle('physioAccess', d.physioAccess, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Estrategias de recuperación post-partido?</label>
+      ${fichaChecks('recoveryStrategies', d.recoveryStrategies, [
+        { val: 'crioterapia', label: 'Crioterapia' },
+        { val: 'masaje', label: 'Masaje' },
+        { val: 'foam', label: 'Foam roller' },
+        { val: 'compresion', label: 'Compresión' },
+        { val: 'estiramientos', label: 'Estiramientos' },
+        { val: 'ninguna', label: 'Ninguna' }
+      ])}
+    </div>
+
+    <div class="ficha-section-title">🧠 Percepción corporal y compensaciones</div>
+    <div class="fg">
+      <label class="fg-label">Zona que suele cargarse tras partidos exigentes</label>
+      ${fichaChecks('loadZones', d.loadZones, [
+        { val: 'trapecio', label: 'Trapecio sup.' },
+        { val: 'lumbar', label: 'Zona lumbar' },
+        { val: 'aductores', label: 'Aductores' },
+        { val: 'antebrazo', label: 'Antebrazo' },
+        { val: 'hombro', label: 'Hombro dominante' },
+        { val: 'rodillas', label: 'Rodillas' },
+        { val: 'fascia', label: 'Fascia plantar' },
+        { val: 'ninguna', label: 'Ninguna' }
+      ])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Notas compensaciones durante la temporada?</label>
+      <textarea class="ficha-textarea" id="f-compensations" placeholder="Ej: Cargo más en la pierna izquierda para no forzar la cadera derecha">${esc(d.compensations || '')}</textarea>
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Evitas movimientos por miedo a lesionarte?</label>
+      ${fichaYesNo('avoidanceMovements', d.avoidanceMovements?.has, 'cond-avoidance',
+        `<textarea class="ficha-textarea" id="f-avoidanceDetails" placeholder="Describe qué movimientos evitas y por qué">${esc(d.avoidanceMovements?.details || '')}</textarea>`
+      )}
+    </div>`;
+}
+
+function renderFichaStep7(d) {
+  const goalOptions = [
+    { val: 'optimizar', label: 'Optimizar técnica para reducir riesgo lesional' },
+    { val: 'biomecanica', label: 'Evaluar patrones biomecánicos para rendimiento' },
+    { val: 'prevenir', label: 'Prevenir recaídas de lesiones anteriores' },
+    { val: 'tratamiento', label: 'Planificación de tratamiento individualizado' },
+    { val: 'otro', label: 'Otro' },
+  ];
+
+  // Build summary
+  const s1 = fichaData.step1 || {};
+  const s2 = fichaData.step2 || {};
+  const injuryCount = (s2.injuries || []).filter(i => i !== 'otra').length;
+  const levelMap = { itf: 'ITF/ATP/WTA', nacional: 'Nacional absoluto', sub18: 'Sub-18/Sub-16', amateur: 'Amateur competitivo' };
+
+  return `
+    <div class="fg">
+      <label class="fg-label">Objetivo con esta valoración (puedes marcar varios)</label>
+      ${fichaChecks('goals', d.goals, goalOptions)}
+      <div class="cond-field${(d.goals || []).includes('otro') ? ' show' : ''}" id="cond-otherGoal">
+        <input class="ficha-inp" id="f-otherGoal" type="text" value="${esc(d.otherGoal || '')}" placeholder="Especifica tu objetivo">
+      </div>
+    </div>
+    <div class="fg">
+      <label class="fg-label">¿Deseas recibir informe con sugerencias de intervención?</label>
+      ${fichaToggle('wantsReport', d.wantsReport, [{ val: 'si', label: 'Sí' }, { val: 'no', label: 'No' }])}
+    </div>
+    <div class="fg">
+      <label class="fg-label">Observaciones adicionales</label>
+      <textarea class="ficha-textarea" id="f-observations" placeholder="Cualquier información adicional que consideres relevante">${esc(d.observations || '')}</textarea>
+    </div>
+
+    <div class="ficha-section-title">📊 Resumen del deportista</div>
+    <div class="ficha-summary">
+      <div class="ficha-summary-row"><span class="ficha-summary-label">Nombre</span><span class="ficha-summary-value">${esc(s1.name || '—')}</span></div>
+      <div class="ficha-summary-row"><span class="ficha-summary-label">Edad</span><span class="ficha-summary-value">${s1.age || '—'} años</span></div>
+      <div class="ficha-summary-row"><span class="ficha-summary-label">IMC</span><span class="ficha-summary-value">${s1.bmi || '—'}</span></div>
+      <div class="ficha-summary-row"><span class="ficha-summary-label">Nivel</span><span class="ficha-summary-value">${levelMap[s1.level] || '—'}</span></div>
+      <div class="ficha-summary-row"><span class="ficha-summary-label">Lateralidad</span><span class="ficha-summary-value">${s1.handedness ? (s1.handedness === 'diestra' ? 'Diestra' : 'Zurda') : '—'}</span></div>
+      <div class="ficha-summary-row"><span class="ficha-summary-label">Lesiones (últimos 2 años)</span><span class="ficha-summary-value">${injuryCount > 0 ? injuryCount + ' registrada' + (injuryCount > 1 ? 's' : '') : 'Ninguna'}</span></div>
+      <div class="ficha-summary-row"><span class="ficha-summary-label">Limitación actual</span><span class="ficha-summary-value">${s2.currentLimitation?.has === 'si' ? 'Sí' : 'No'}</span></div>
+      <div class="ficha-summary-row"><span class="ficha-summary-label">Objetivos</span><span class="ficha-summary-value">${(d.goals || []).length > 0 ? (d.goals || []).length + ' seleccionado' + ((d.goals || []).length > 1 ? 's' : '') : '—'}</span></div>
+    </div>`;
+}
+
+// Escape HTML
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+// Auto-calculate age from DOB
+function fichaCalcAge() {
+  const dob = document.getElementById('f-dob')?.value;
+  const ageEl = document.getElementById('f-age');
+  if (!dob || !ageEl) return;
+  const birth = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birth.getFullYear();
+  const m = today.getMonth() - birth.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--;
+  ageEl.textContent = age + ' años';
+}
+
+// Auto-calculate BMI
+function fichaCalcBMI() {
+  const h = parseFloat(document.getElementById('f-height')?.value);
+  const w = parseFloat(document.getElementById('f-weight')?.value);
+  const bmiEl = document.getElementById('f-bmi');
+  if (!bmiEl || !h || !w || h <= 0) return;
+  const bmi = (w / ((h / 100) ** 2)).toFixed(1);
+  let cls = 'bmi-normal', label = 'Normal';
+  if (bmi >= 30) { cls = 'bmi-obese'; label = 'Obesidad'; }
+  else if (bmi >= 25) { cls = 'bmi-overweight'; label = 'Sobrepeso'; }
+  bmiEl.innerHTML = `${bmi} <span class="bmi-badge ${cls}">${label}</span>`;
+}
+
+// Attach event delegation for toggles, checks, scales
+function attachFichaListeners() {
+  const body = document.getElementById('fichaBody');
+  body.addEventListener('click', function(e) {
+    // Toggle buttons (single select within group)
+    const toggleBtn = e.target.closest('.toggle-btn');
+    if (toggleBtn) {
+      const group = toggleBtn.parentElement;
+      group.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('sel'));
+      toggleBtn.classList.add('sel');
+      fichaUnsaved = true;
+
+      // Handle conditional fields
+      const fieldName = group.dataset.field;
+      const val = toggleBtn.dataset.val;
+      handleFichaConditional(fieldName, val);
+      return;
+    }
+
+    // Check pills (multi select)
+    const pill = e.target.closest('.check-pill');
+    if (pill) {
+      pill.classList.toggle('sel');
+      fichaUnsaved = true;
+
+      // Handle conditional for "otra"/"otro"
+      const grid = pill.parentElement;
+      const fieldName = grid.dataset.field;
+      if (fieldName === 'injuries') {
+        const otraSel = grid.querySelector('[data-val="otra"]')?.classList.contains('sel');
+        const cond = document.getElementById('cond-otherInjury');
+        if (cond) cond.classList.toggle('show', otraSel);
+      }
+      if (fieldName === 'goals') {
+        const otroSel = grid.querySelector('[data-val="otro"]')?.classList.contains('sel');
+        const cond = document.getElementById('cond-otherGoal');
+        if (cond) cond.classList.toggle('show', otroSel);
+      }
+      return;
+    }
+
+    // Scale nums (single select)
+    const scaleNum = e.target.closest('.scale-num');
+    if (scaleNum) {
+      const row = scaleNum.parentElement;
+      row.querySelectorAll('.scale-num').forEach(n => n.classList.remove('sel'));
+      scaleNum.classList.add('sel');
+      fichaUnsaved = true;
+      return;
+    }
+  });
+}
+
+function handleFichaConditional(fieldName, val) {
+  const condMap = {
+    'currentLimitation': 'cond-limitation',
+    'surgeries': 'cond-surgeries',
+    'medication': 'cond-medication',
+    'serveModifiedThrow': 'cond-serveModified',
+    'forehandDefenseIssues': 'cond-forehandDefense',
+    'backhandPainAfter': 'cond-backhandPain',
+    'avoidanceMovements': 'cond-avoidance',
+  };
+  const condId = condMap[fieldName];
+  if (condId) {
+    const cond = document.getElementById(condId);
+    if (cond) cond.classList.toggle('show', val === 'si');
+  }
+}
+
+// Collect values from current step
+function collectFichaStep(n) {
+  const body = document.getElementById('fichaBody');
+  if (!body) return;
+
+  function getToggle(name) {
+    const sel = body.querySelector(`[data-field="${name}"] .toggle-btn.sel`);
+    return sel ? sel.dataset.val : '';
+  }
+  function getChecks(name) {
+    return Array.from(body.querySelectorAll(`[data-field="${name}"] .check-pill.sel`)).map(p => p.dataset.val);
+  }
+  function getScale(name) {
+    const sel = body.querySelector(`[data-field="${name}"] .scale-num.sel`);
+    return sel ? parseInt(sel.dataset.val) : '';
+  }
+  function getVal(id) {
+    const el = document.getElementById(id);
+    return el ? el.value : '';
+  }
+  function getReadonly(id) {
+    const el = document.getElementById(id);
+    return el ? el.textContent : '';
+  }
+
+  if (n === 1) {
+    const h = parseFloat(getVal('f-height'));
+    const w = parseFloat(getVal('f-weight'));
+    let bmi = '';
+    if (h && w && h > 0) bmi = (w / ((h / 100) ** 2)).toFixed(1);
+    fichaData.step1 = {
+      name: getVal('f-name'),
+      dob: getVal('f-dob'),
+      age: getReadonly('f-age').replace(' años', ''),
+      sex: getToggle('sex'),
+      height: getVal('f-height'),
+      weight: getVal('f-weight'),
+      bmi: bmi,
+      handedness: getToggle('handedness'),
+      footedness: getToggle('footedness'),
+      competes: getToggle('competes'),
+      level: getToggle('level'),
+      club: getVal('f-club'),
+      hoursTraining: getVal('f-hoursTraining'),
+      hoursPhysical: getVal('f-hoursPhysical'),
+      hoursSleep: getVal('f-hoursSleep'),
+    };
+  } else if (n === 2) {
+    fichaData.step2 = {
+      injuries: getChecks('injuries'),
+      otherInjury: getVal('f-otherInjury'),
+      currentLimitation: { has: getToggle('currentLimitation'), details: getVal('f-limitationDetails') },
+      surgeries: { has: getToggle('surgeries'), details: getVal('f-surgeriesDetails') },
+      medication: { has: getToggle('medication'), details: getVal('f-medicationDetails') },
+    };
+  } else if (n === 3) {
+    fichaData.step3 = {
+      serve: {
+        types: getChecks('serveTypes'),
+        modifiedThrow: { has: getToggle('serveModifiedThrow'), details: getVal('f-serveModifiedDetails') },
+        thoracicBlock: getToggle('serveThoracicBlock'),
+        velocityLoss: getToggle('serveVelocityLoss'),
+      },
+      forehand: {
+        grip: getToggle('forehandGrip'),
+        loadPhase: getChecks('forehandLoadPhase'),
+        defenseIssues: { has: getToggle('forehandDefenseIssues'), details: getVal('f-forehandDefenseDetails') },
+      },
+    };
+  } else if (n === 4) {
+    fichaData.step4 = {
+      backhand: {
+        type: getToggle('backhandType'),
+        rotationalLoad: getToggle('backhandRotationalLoad'),
+        imbalances: getToggle('backhandImbalances'),
+        painAfter: { has: getToggle('backhandPainAfter'), details: getVal('f-backhandPainDetails') },
+      },
+      volley: {
+        scapulaStability: getToggle('volleyScapula'),
+        cervicalTension: getToggle('volleyCervical'),
+        avoidDeepVolley: getToggle('volleyAvoidDeep'),
+      },
+    };
+  } else if (n === 5) {
+    fichaData.step5 = {
+      surfaces: getChecks('surfaces'),
+      directionChangeIssues: getToggle('directionChangeIssues'),
+      pushFootIssues: getToggle('pushFootIssues'),
+      lateralImbalance: getScale('lateralImbalance'),
+      overloadAreas: getChecks('overloadAreas'),
+      competitionFrequency: getToggle('competitionFrequency'),
+    };
+  } else if (n === 6) {
+    fichaData.step6 = {
+      strengthTraining: getToggle('strengthTraining'),
+      activations: getChecks('activations'),
+      mobilityWork: getToggle('mobilityWork'),
+      physioAccess: getToggle('physioAccess'),
+      recoveryStrategies: getChecks('recoveryStrategies'),
+      loadZones: getChecks('loadZones'),
+      compensations: getVal('f-compensations'),
+      avoidanceMovements: { has: getToggle('avoidanceMovements'), details: getVal('f-avoidanceDetails') },
+    };
+  } else if (n === 7) {
+    fichaData.step7 = {
+      goals: getChecks('goals'),
+      otherGoal: getVal('f-otherGoal'),
+      wantsReport: getToggle('wantsReport'),
+      observations: getVal('f-observations'),
+    };
+  }
 }
 
 /* ═══ BOOT ═══ */
